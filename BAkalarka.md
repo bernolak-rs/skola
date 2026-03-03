@@ -1,0 +1,1 @@
+navrh som riesil dostupnym API
