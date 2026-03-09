@@ -158,13 +158,9 @@ Kvartil - rozdeluje data na 4 casti:
 
 # Prednaska 3
 ### Nahodna premenna
-- Náhodná premenná X je funkcia , ktorá každému elementárnemu javu náhodného
-pokusu priradí reálne číslo, t. j.
-X : Ω → R.
-- Premenná (štatistický znak) X sa nazýva náhodná premenná, ak jej hodnoty
-sú výsledkom náhodného pokusu. Číslo x ∈ R, ktoré nadobudne náhodná
-premenná X pri jednom opakovaní náhodného pokusu, sa nazýva realizácia
-náhodnej premennej X.
+- Náhodná premenná X je funkcia , ktorá každému elementárnemu javu náhodného pokusu priradí reálne číslo, t. j. X : Ω → R.
+- Premenná (štatistický znak) X sa nazýva náhodná premenná, ak jej hodnoty sú výsledkom náhodného pokusu. Číslo x ∈ R, ktoré nadobudne náhodná premenná X pri jednom opakovaní náhodného pokusu, sa nazýva realizácia náhodnej premennej X.
+- PRIRADIT NAHODNEMU POKUSU CISLO
 
 TX - mnozina realizacii (obor hodnot) nahodnej premennej X
 
@@ -197,6 +193,7 @@ f(x) -> hustota rozdelenia pravdepodobnosti náhodnej premennej X
 
 ### Distribucna funkcia
 ![[Pasted image 20260303234059.png]]
+- aka je pravdepodobnost ze hodnota je mensia alebo rovno ako hodnota x
 Nech F (x) je distribučná funkcia náhodnej premennej X . Potom
 - pre každé x ∈ R platí 0 ≤ F (x) ≤ 1;
 - lim F (x) = 1 a  lim F (x) = 0;
@@ -213,4 +210,7 @@ Nech F (x) je distribučná funkcia náhodnej premennej X . Potom
 - Disperzia náhodnej premennej je číslo, ku ktorému sa rozptyl zo vzorky blíži pri veľkom počte meraní.
 - Disperzia D(X ) je teoretickým ekvivalentom rozptylu s 2 .
 ![[Pasted image 20260303234641.png]]
-
+![[Pasted image 20260304075522.png]]
+### Hustota rozdelenia pravdepodobnosti
+- pravdepodobnost z intervalu
+- musi byt spojita
