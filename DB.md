@@ -297,9 +297,11 @@ Kardinalita
 - 1- sa znaci ciarkou |
 - N - sa znaci rozvetvenim
 
+M:N vznika asociacna entita
+
 Clenstvo
 - povinne - FK - NN
-- nepovinne - FK - moze byt bull - Hrac - Klub (hrac nie je v klube id_klub is null)
+- nepovinne - FK - moze byt null - Hrac - Klub (hrac nie je v klube id_klub is null)
 
 Rekurzivny vztah - Hierarchia
 - neidentifikacny - nemozme mat nekonecno zaznamov
@@ -349,8 +351,16 @@ create table st_odbory
  (id_odboru integer,
   id_zamerania integer,
   popis varchar(20),
-  primary key(id_odboru, id_zamerania)
+  primary key(id_odboru, id_zamerania) -- kompozitny PK
  );
+ 
+ create table st_odbory
+ (id_odboru integer,
+  id_zamerania integer,
+  popis varchar(20)
+ );
+ 
+ alter table st_odbory add primary key(id_odboru, id_zamerania); -- kompozitny PK
 -- ALTER
  -- ADD
  -- MODIFY
@@ -370,3 +380,134 @@ alter table T add primary key(id);
 alter table T add check(mod(id,2)=0);
 insert into t values(3); -- nepojde
 ```
+
+
+# Cvicenie 4
+Dokoncil som 4. hierarchiu
+```sql
+--- Na precvicenie DDL z cvika
+SELECT * FROM soc_poistovna_bc.p_osoba;
+```
+
+
+# Prednaska 4
+
+```sql
+ create table st_odbory
+ (id_odboru integer,
+  id_zamerania integer,
+  popis varchar(20)
+ );
+ 
+ alter table st_odbory add primary key(id_odboru, id_zamerania); -- kompozitny PK
+
+alter table osoba modify meno not null;
+
+alter table osoba drop column mesto;
+
+alter table osoba add email varchar(20) not null;
+
+-- Email musi obsahovat zavinac
+alter table osoba add constraint email_kontrola
+	check(email like '%@%');
+	
+alter table osoba modify ...
+
+alter table osoba drop constraint email_kontrola;
+select * from user_constraints; -- vypisat constraints
+alter table osoba drop constraint SYS_C0025863; -- vymazat bez pomocou ID z minuleho prikazu
+------------------------
+create table st
+ (os_cislo integer,
+  rocnik integer,
+  datum_zapisu date,
+  constraint pk_st primary key(os_cislo)
+);
+alter table st add rc char(11);
+alter table st add foreign key(rc) reference osoba(rod_cislo);
+
+desc st; -- vypise st tabulku
+-- typ - neidentifikacny. vztah
+-- kardinalita - 1:N
+-- clenstvo - null - nepovinne
+
+-- typ - identifikacny
+alter table st drop constraint pk_st;
+alter table st add primary key(os_cislo, rc); -- CHYBA, NIE JE MINIMALNY TERAZ
+
+-- kardinalita - 1:1
+alter table st modify rc unique;
+
+-- clenstvo - povinne
+alter table st modify rc not null;
+
+-- Chceme zmenit naspat na neidentifikacny
+select constraint_name
+  from user_constraints
+   where table_name='ST'
+    and constraint_type='P' -- dostaneme sys ID pre constraint na PK, lebo sme ho nepomenovali
+
+alter table st drop constraint SYS_C001244;
+
+alter table st add primary key(os_cislo);
+
+create table asoc_tab
+(
+	rc char(11),
+	oc integer,
+	hodnota integer check(mod(hodnota,2)=0),
+	primary key(rc, oc);
+);
+
+alter table asoc_table add foreign key(rc) references osoba(rod_cislo);
+alter table asoc_tab add constraint FK_st foreign key(oc) references st(os_cislo);
+-- M:N - vznikla asoc. entita, 1:N - 2x
+--------------------------------------------------
+
+desc student;
+
+create sequence sekv;
+
+select sekv.nextval
+ from dual;
+ 
+select sekv.currval
+ from dual;
+ 
+-- sekvencia sa nevrati rollbackom
+alter sequence sekv increment by 2;
+alter sequence sekv cycle;
+alter sequence sekv maxvalue 100;
+drop sequence sekv;
+------------------------------------------
+create sequence sekv
+	start with 10
+	 minvalue 5
+	 maxvalue 20
+	 increament by 2;
+	 
+alter sequence sekv cycle cache 2; -- CACHE nam nacita dany pocet hodnot sekvencie aby sme nemuseli frust nacitavat
+select sekv.nextval from dual;
+----------------------------------------------
+-- DCL - Data control language
+-- GRANT - pridanie pristupoveho prava
+-- REVOKE - odobranie pristupoveho prava
+-- musime mat prava ne udelovanie a odoberanie prav
+grant XXXXXXXXX to XXXXXXXXXXX;
+
+grant select, update on st to PASTIERIK2; -- pridame select na tabulku 'st' kolegovi
+grant ALL on st to PASTIERIK2; -- ALL - select, update, delete, insert
+grant create table to pastierik2;
+grant select on st to PUBLIC; -- VSETCI mozu pouzivat select
+
+revoke select, update, delete, insert on st from pastierik2;
+revoke select on st from kvet3; -- NEPOJDE, majitel tabuliek ma vzdy prava
+
+grant select on st to pastierik2 with grant option; -- objektove prava, moze aj dalej udelovat a odoberat prava na select
+grant select on st to pastierik2 with ADMIN option; -- objektove prava 
+
+select * from kvet3.st; -- kolega ale musi pouzivat plne kvalifikovane meno
+
+
+```
+

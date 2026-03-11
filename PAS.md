@@ -214,3 +214,15 @@ Nech F (x) je distribučná funkcia náhodnej premennej X . Potom
 ### Hustota rozdelenia pravdepodobnosti
 - pravdepodobnost z intervalu
 - musi byt spojita
+
+# Prednaska 4
+
+# Cvicenie 4
+Rozdelenie dat?
+- Vizualizacia, ako pravdepobne su jednotlive hodnoty (na träger pridame hodnoty) funkcie p(x) a f(x)
+Rozdelenie pocetnosti?
+- odvodenie rozdelenia dat - empiricky dame pocet na jednotlivych hodnotach premennej
+Rozdelenie pravdepodobnosti?
+- rozdelenie teoretickych pravdepodobnosti
+Model rozdelenia dat?
+- p(x) a f(x)
