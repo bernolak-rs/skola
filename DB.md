@@ -131,9 +131,12 @@ SELECT 1+1 FROM dual
 Datumy
 
 ```sql
-SELECT to_date('05-01-2025', 'DD-MM-YYYY') FROM dual -- formatovanie datumu
+SELECT to_date('05-01-2025', 'DD-MM-YYYY') FROM dual; -- formatovanie datumu
 
-SELECT to_char(sysdate, 'DD.MM.YY') FROM dual  -- dnesny datum
+SELECT to_char(sysdate, 'DD.MM.YY') FROM dual;  -- dnesny datum
+
+extract(year from dat) = ...
+trunc(dat)=trunc(sysdate)
 
 SELECT sysdate+1 FROM dual  -- dnesny datum + 1 den
 SELECT add_months(sysdate, 2)  -- za 2 mesiace
@@ -179,10 +182,10 @@ Toto bude dolezite pri INSERT, DELETE a UPDATE
 
 ```sql
 INSERT into os_udaje
- VALUES ('561224/1234', 'Michal', 'Kvet', null, null, null)
+ VALUES ('561224/1234', 'Michal', 'Kvet', null, null, null);
  
  INSERT into os_udaje (meno, priezvisko, rod_cislo) 
-	 (select meno, priezvisko, rod_cislo FROM nove_osoby)
+	 (select meno, priezvisko, rod_cislo FROM nove_osoby);
 
 -- Prepis NOT EXISTS
 INSERT into os_udaje(meno, priezvisko, rod_cislo)
@@ -393,13 +396,13 @@ SELECT * FROM soc_poistovna_bc.p_osoba;
 # Prednaska 4
 
 ```sql
- create table st_odbory
+create table st_odbory
  (id_odboru integer,
   id_zamerania integer,
   popis varchar(20)
  );
  
- alter table st_odbory add primary key(id_odboru, id_zamerania); -- kompozitny PK
+alter table st_odbory add primary key(id_odboru, id_zamerania); -- kompozitny PK
 
 alter table osoba modify meno not null;
 
@@ -511,3 +514,258 @@ select * from kvet3.st; -- kolega ale musi pouzivat plne kvalifikovane meno
 
 ```
 
+# Cvicenie 5
+
+Na teste bude aj DDL
+
+```sql
+--Uloha 2
+SELECT meno, priezvisko, MOD(substr(rod_cislo, 3, 2), 50) mesiac_narodenia
+  from p_osoba
+  where MOD(substr(rod_cislo, 3, 2), 50) = to_char(add_months(sysdate, -1), 'MM')
+  order by mesiac_narodenia;
+-- NEMOZME POUZIT ALIAS vo where lebo sa vykona pred definiciou aliasu v selecte
+
+SELECT TRUNC(add_months(sysdate, -1), 'MM')
+  from dual;
+
+select meno, priezvisko
+  from p_osoba o1
+  where exists(
+	  select 'x'
+	  from p_osoba o2
+	  where o1.meno = o2.meno and
+		  o1.priezvisko = o2.priezvisko and
+		  o1.rod_cislo != o2.rod_cislo
+  )
+  order by o1.priezvisko, o1.meno;
+```
+
+# Prednaska 5
+NOT IN nepouzivat pri kompozitnom PK
+
+```sql
+select os_cislo, meno, priezvisko
+  from os_udaje join student using (rod_cislo)
+    where os_cislo in (
+        select os_cislo
+          from zap_predmety
+            where vysledok='A'
+    );-- vrati vsetky s Ackom
+
+select os_cislo, meno, priezvisko
+  from os_udaje join student using (rod_cislo)
+    where os_cislo not in (
+        select os_cislo
+          from zap_predmety
+            where vysledok<>'A'
+    );-- vrati iba cistych Ackarov
+    
+-- ROD_CISLO - PK - os_udaje
+-- ROD_CISLO - FK - student
+
+-- FK sa odkazuje na existujucu hodnotu PK
+select * from os_udaje;
+
+insert into os_udaje
+ select '841106/xxxx', meno, priezvisko, ulica, psc, obec from os_udaje
+   where rod_cislo='841106/3456';
+   
+update student set rod_cislo='841106/xxxx' where rod_cislo='841106/3456';
+
+delete from os_udaje where rod_cislo='841106/3456';
+
+rollback;
+
+-- soc poistovna
+insert into poberatel
+  select -id_poberatela, rod_cislo, id_typu, perc_vyj, dat_od, dat_do
+    from poberatel;
+    
+update p_prispevky
+  set id_poberatel=-id_poberatel;
+  
+delete from p_poberatel
+  where id_poberatela > 0;
+  
+--DU vyber osobu soc. poistovna a zmen jej rod_cislo
+
+select meno, priezvisko, os_cislo
+  from os_udaje join student using(rod_cislo)
+    where os_cislo is null;
+    
+select meno, priezvisko, os_cislo
+  from os_udaje join student using(rod_cislo)
+    where os_cislo is not null;
+    
+select * from student;
+
+-- INNER JOIN - join
+-- SEMI JOIN - IN, EXISTS
+-- ANTI JOIN - NOT IN, NOT EXISTS
+
+-- OUTER JOIN
+
+select meno, priezvisko, os_cislo
+  from os_udaje left OUTER join student using(rod_cislo)
+    order by os_cislo nulls first;
+    
+select meno, priezvisko, os_cislo
+  from os_udaje right OUTER join student using(rod_cislo)
+    order by os_cislo nulls first; -- toto vrati to iste ako inner join kvoli FK
+    
+-- FULL JOIN
+select *
+  from p_platitel FULL join p_poistenie using(id_platitela);
+  
+select *
+  from p_platitel FULL join p_poistenie on
+    (p_platitel.id_platitela=p_poistenie.id_platitela)
+      order by p_platitel.id_platitela nulls first;
+      
+-- zbytocny join, da sa to cez not exists alebo not in (anti join)
+select meno, priezvisko
+  from os_udaje left join student using(rod_cislo)
+    where os_cislo is null;
+    
+-- lepsie spravit takto
+select meno, priezvisko
+  from os_udaje os
+    where not exists (
+        select 'x' from student st
+          where os.rod_cislo=st.rod_cislo
+    );
+    
+select meno, priezvisko
+  from os_udaje
+    where rod_cislo not in (
+        select rod_cislo from student
+    );
+```
+
+## Agregacne funkcie
+MIN
+MAX
+SUM
+COUNT
+AVG
+- ignoruju NULL hodnoty napr. 
+```sql
+select count(dat_zapisu) from student; -- moze byt NULL a tie ignoruje
+```
+```sql
+select rocnik, count(*)
+  from student
+    group by ROCNIK;
+    
+select meno, priezvisko, count(*) as pocet
+  from os_udaje join student using (rod_cislo)
+    group by meno, priezvisko, rod_cislo;
+    
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+    group by meno, priezvisko, rod_cislo
+      order by priezvisko, meno;
+      
+select meno, priezvisko, os_cislo, count(distinct cis_predm), count(cis_predm)
+  from os_udaje join student using (rod_cislo)
+                join zap_predmety using (os_cislo)
+    group by meno, priezvisko, os_cislo;
+    
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+    where count(os_cislo)>1 -- ZLE!!!!
+    group by meno, priezvisko, rod_cislo
+      order by priezvisko, meno;
+      
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+    group by meno, priezvisko, rod_cislo
+      having count(os_cislo)>1;
+
+
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+                     join zap_predmety using (os_cislo)
+    group by meno, priezvisko, rod_cislo;
+
+
+    
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+                     join zap_predmety using (os_cislo)
+    group by meno, priezvisko, rod_cislo
+      having sum(ects)=(select max(sum(ects))
+                            from zap_predmety
+                              group by os_cislo);
+                              
+    
+select meno, priezvisko, count(os_cislo) as pocet
+  from os_udaje left join student using (rod_cislo)
+                     join zap_predmety using (os_cislo)
+    group by meno, priezvisko, rod_cislo
+      having sum(ects)=(select max(pocet_kreditov)
+                          from (select sum(ects) as pocet_kreditov
+                            from zap_predmety
+                              group by os_cislo));
+                              
+
+select meno, priezvisko, count(distinct cis_predm) -- pocet predmetov
+  from ucitel join zap_predmety on (ucitel.os_cislo=prednasajuci)
+    group by meno, priezvisko, ucitel.os_cislo;
+                              
+select meno, priezvisko, count(distinct cis_predm)
+  from ucitel join zap_predmety on (ucitel.os_cislo=prednasajuci)
+    group by meno, priezvisko, ucitel.os_cislo
+      having count(distinct cis_predm) = (select max(count(distinct cis_predm))
+                                            from zap_predmety
+                                              group by prednasajuci); -- ucitel s najviac predmetmi
+
+                       
+select os_cislo, cis_predm, zp.skrok, zp.ects, pb.ects
+  from zap_predmety zp join predmet using(cis_predm)
+                    join predmet_bod pb using(cis_predm)
+    where zp.skrok=pb.skrok
+      and zp.ects <> pb.ects;
+      
+                
+select os_cislo, cis_predm, zp.skrok, zp.ects, pb.ects
+  from zap_predmety zp join predmet_bod pb using(cis_predm)
+    where zp.ects <> pb.ects;
+
+--vcerajsok
+select sysdate-1 from dual;
+
+select to_char(sysdate-1, 'DD.MM.YYYY')
+  from dual;
+
+select to_char(trunc(sysdate, 'MM') - 1, 'DD.MM.YYYY')
+  from dual;
+
+DAT between (sysdate -2) and sysdate;
+
+dat +30
+add_months(sysdate, 1)
+
+months_between() --mesiace medzi datumami
+
+select dat_od, dat_do, dat_do-dat_od pocet_dni, 
+  months_between(dat_do, dat_od) pocet_mesiacov
+  months_between(dat_do, dat_od) / 12 pocet_rokov
+  from p_poberatel
+    where dat_do is not null;
+
+select to_date('19'||substr(rod_cislo, 1, 2)||'.' ||mod(substr(rod_cislo, 3, 2), 50)||'.'
+	||substr(rod_cislo, 5,2), 'YYYY.MM.DD')
+  from os_udaje;
+  
+substr(datum, 1, 2); -- NIKDY
+select to_char(sysdate, 'MM') from dual;
+
+```
+NA TESTE BUDE -
+select, insert, update, delete
+antijoin, semijoin
+prava
+ddl
+VSETKO CO SME MALI ODCVICENE DOTERAZ

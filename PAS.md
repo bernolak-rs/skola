@@ -1,5 +1,6 @@
 # Prednaska 1
 
+data - hodnoty bez vyznamu, hladame v nich informacie
 X = mnozina hodnot - napr. jazdy na bicykli
 Xi = konkretna statisticka hodnota - napr. konkretna jazda
 zakladny subor - namerane hodnoty za urcitu dobu
@@ -216,7 +217,7 @@ Nech F (x) je distribučná funkcia náhodnej premennej X . Potom
 - musi byt spojita
 
 # Prednaska 4
-
+nechcelo sa mi
 # Cvicenie 4
 Rozdelenie dat?
 - Vizualizacia, ako pravdepobne su jednotlive hodnoty (na träger pridame hodnoty) funkcie p(x) a f(x)
@@ -226,3 +227,33 @@ Rozdelenie pravdepodobnosti?
 - rozdelenie teoretickych pravdepodobnosti
 Model rozdelenia dat?
 - p(x) a f(x)
+
+
+# Prednaska 5
+parameter
+- cislo, ktore si mozem dosadit
+- cislo, ktore popisuje populaciu
+- popisuje tvar rozdelenia
+populacia
+- mnozina vsetkych objektov, ktore su predmetom nasho vyskumu
+	alebo
+- vsetky data, ktore chceme sledovat na zaklade nejakeho znaku alebo vlastnosti
+Reprezentativna vzorka
+- stichprobe, vyberovy subor
+Bodovy odhad
+- odhad je jedno cislo
+Verny obraz populacie
+- rozdelenie pravdepodobnosti ako cela populacia
+- mala rovnake parametre ako populacia
+Nahodny vyberov subor
+- Výberový súbor sa nazýva náhodný, ak o tom, či sa jednotka základného súboru
+vybrala alebo nie, rozhodla iba náhoda.
+- Každý prvok základného súboru
+	- musí mať rovnakú pravdepodobnosť, že sa stane prvkom výberového súboru;
+	- je do výberového súboru vybraný náhodne.
+Odhad:
+- vypocitana hodnota
+Statistika v kontexte tejto prednasky
+- funkcia, ktora nam da hodnotu
+Statistika v kontexte predmetu
+- skuma data,...
