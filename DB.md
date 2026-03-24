@@ -541,7 +541,7 @@ select meno, priezvisko
   order by o1.priezvisko, o1.meno;
 ```
 
-# Prednaska 5
+# Prednaska 5 - Opakovanie, Agregacne funkcie
 NOT IN nepouzivat pri kompozitnom PK
 
 ```sql
@@ -769,3 +769,71 @@ antijoin, semijoin
 prava
 ddl
 VSETKO CO SME MALI ODCVICENE DOTERAZ
+
+# Prednaska 6 - PL/SQL - Procedury, Funkcie, Triggre
+- nepomenovane bloky prikazov
+- pomenovane bloky prikazov - procedury, funkcie
+- triggre:
+	- viazu sa na DML
+	- [DEKLARACNA CAST] begin TELO[exception handler(viaze sa na telo)] end; / (terminator)
+- v sql nemame procedury(nevracaju navratovu hodnotu)
+
+```sql
+v_priezvisko os_udaje.priezvisko%type --da rovnaky typ ako os_udaje.priezvisko
+os_udaje%rowtype
+
+premenna := vyraz; --priradenie
+v_datum := sysdate;
+select sysdate into v_datum from dual; --musi vratit prave 1 riadok inak CHYBA
+
+select f1,f2 into v_f1, v_f2 from dual;
+
+v_osoba os_udaje%rowtype;
+select * into v_osoba
+ from os_udaje
+  where rod_cislo = '123456/1234';
+
+declare
+ v_prem varchar(20);
+ v_cislo integer:=1;
+begin
+ v_prem:=case when v_cislo=1 then 'jednotka'
+              when v_cislo=2 then 'dvojka'
+              end;            --KED NENAJDE CASE TAK NASTAVI NA NULL (v ORACLE je null="")
+   dbms_output.put_line(v_prem);
+end;
+/
+
+CYKLY loop, while, for
+begin
+ for i in 1..5
+  loop
+   dbms_output.put_line(i);
+  end loop;
+end;
+/
+
+begin
+ for i in reverse 1..5
+  loop
+   dbms_output.put_line(i);
+  end loop;
+end;
+/
+
+set serveroutput on; --aby sme mohli vidiet output
+
+select to_char(sysdate, 'DD.MM.YYYY HH.MI.SS') from dual;
+select to_char(sysdate, 'month') from dual;
+
+
+-- globalne premenne printujeme pomocou print, dbms_output.put_line nefunguje 
+VARIABLE v_meno varchar2(50);
+print v_meno;
+
+Exceptions -- -20 999; -20 000 
+SQLERRM -- error message
+SQLCODE -- cislo erroru
+
+-- V triggri neodchytavame vynimku ale vyvolavame
+```

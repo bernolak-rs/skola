@@ -257,3 +257,7 @@ Statistika v kontexte tejto prednasky
 - funkcia, ktora nam da hodnotu
 Statistika v kontexte predmetu
 - skuma data,...
+
+# Prednaska 6
++1
+konfidencny interval
