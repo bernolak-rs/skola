@@ -1,4 +1,4 @@
-# Databazove Systemy
+D# Databazove Systemy
 
 ## Basics
 
@@ -648,8 +648,10 @@ MIN
 MAX
 SUM
 COUNT
+- count(*) - spocita riadky
 AVG
 - ignoruju NULL hodnoty napr. 
+V group by musime mat atributy ktore mame v selecte, cize to co napiseme za select, to musi by v group by
 ```sql
 select count(dat_zapisu) from student; -- moze byt NULL a tie ignoruje
 ```
@@ -837,3 +839,42 @@ SQLCODE -- cislo erroru
 
 -- V triggri neodchytavame vynimku ale vyvolavame
 ```
+
+# Prednaska 7 - Normalizacia
+Determinant - mnozina atributov z ktorej vychadzaju ine atributy
+1. cast 
+	- odstranit duplicity
+	- vsetky nevypocitatelne
+	- atomicke atributy
+2. cast - uplna FZ
+	- uplna FZ - atribut je zavisly od celeho primarneho kluca (cize ked je KPK kompozitny)
+	- (CP, SK_ROK, OC) -> (RC ->Meno)
+3. cast
+	- odstranit tranzitivne FZ (A->B->C=A->C)
+	- odrazeme na konci(A->B-/>C =(spravime 2 tabulky) A->B   B->C)
+	- vztah 1:1 treba premysliet ci to ma prinos
+
+Funkcna zavislost (FZ)
+- vztah medzi 2 zavislostami
+- A -> B, podla A viem jednoznacne povedat B
+- OC -> RC, RC->Pohlavie to znamena OC -> Pohlavie
+- determinant je ten na lavej strane pri prikladoch hore (vieme z neho vyvodit lavu stranu)
+- (CP, SK_ROK, OC) -> Vysledok
+- Login<->OC - vzajomna funkcna zavislost
+- A->B trivialna, elementarna, uplna
+
+## 3NF
+1NF - odstranit duplicity, vsetky vypocitatelne, atomicke atributy
+2NF - kazdy atribut ktory netvori kluc je zavisli od celej mnoziny
+3NF - nemam tam tranzitivny FZ od primarneho kluca
+
+## Boyce- Codd normalna forma
+Kazdy determinant je kandidatom primarneho kluca.
+Vychadza z 1NF
+OC -> RC -> Meno
+ |              -> Priezvisko
+V              -> Ulica
+ST_SK      -> PSC 
+         -> obec
+
+moze byt tabulka s jednym atributom ktory je KPK ale nema determinant!!!

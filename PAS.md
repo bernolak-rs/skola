@@ -260,4 +260,109 @@ Statistika v kontexte predmetu
 
 # Prednaska 6
 +1
-konfidencny interval
+konfidencny interval:
+- hovori, ze aka je sanca ze mam dobru metodu (95%, je 5% sanca ze je nespolahlivy)
+kriticka hodnota:
+- kriticka hodnota je kvantil rozdelenia, ktory urcuje sirku intervalu spolahlivosti
+hladina vyznamnosti:
+- do akej miery ze nebude hodnota v intervale
+jednostranny interval:
+- chcem vediet aku hodnotu nepodlezie alebo neprelezie
+max chyba odhadu
+- maximalna mozna hodnota odchylenia od skutocnej hodnoty parametra
+
+Statisticka hypoteza
+- Testovanie - 
+- testovacia statistika
+- nulova hypoteza
+- kriticka oblast
+- zamietnutie nulovej hypotezy - data nepodporuju nulovu hypotezy, nieco sposobilo velku odchylku
+- signifikantny - statisticky vyznamny, rozdiel nie je nahodny
+
+
+Poznamky chata
+## 1. Štatistická hypotéza
+
+Štatistická hypotéza je tvrdenie o parametroch (napr. stredná hodnota μ, rozptyl σ2) alebo o rozdelení populácie, ktoré testujeme pomocou výberových dát.
+
+### Vlastnosti správnej hypotézy:
+
+- **Vyvrátiteľná:** Musí existovať reálna šanca ju vyvrátiť.
+    
+- **Operacionalizovateľná(Meratelne):** Musí byť vyjadrená v merateľných pojmoch.
+    
+- **Jasná odpoveď:** Výsledkom testu je buď zamietnutie, alebo nezamietnutie.
+    
+
+### Typy hypotéz:
+
+1. **Nulová hypotéza (H0​):** Stav "žiadnej zmeny" alebo "žiadneho rozdielu". Predpokladáme, že platí, kým nemáme silný dôkaz proti nej. (Napr. H0​:μ=10).
+    
+2. **Alternatívna hypotéza (Ha​):** To, čo chceme dokázať.
+    
+    - _Obojstranná:_ μ=10
+       
+    - _Jednostranná (ľavostranná):_ μ<10
+       
+    - _Jednostranná (pravostranná):_ μ>10
+       
+
+---
+
+## 2. Princípy a pojmy testovania
+
+Testovanie je postavené na **Popperovskom kritickom racionalizme** – hypotézu nemôžeme nikdy 100 % potvrdiť, môžeme ju len vyvrátiť (falsifikovať).
+
+- **Testovacia štatistika:** Číslo vypočítané z dát (napr. t-štatistika alebo z-skóre).
+
+- **Hladina významnosti (α):** Pravdepodobnosť chyby 1. typu (že zamietneme pravdivú H0​). Bežne sa určuje na 0.05 (5 %).
+
+- **Kritická oblasť (Wα​):** Množina hodnôt, pri ktorých H0​ zamietame. Ak testovacia štatistika padne sem, prijímame Ha​.
+
+
+---
+
+## 3. Algoritmus testovania (Krok za krokom)
+
+1. **Sformulovanie H0​ a Ha​.**
+
+2. **Voľba hladiny významnosti α** (riziko, ktoré sme ochotní podstúpiť).
+
+3. **Overenie predpokladov** (napr. či majú dáta normálne rozdelenie).
+
+4. **Voľba testu a výpočet testovacej štatistiky.**
+
+5. **Určenie kritickej hodnoty** (z tabuliek alebo softvéru).
+
+6. **Rozhodnutie a interpretácia:**
+	- Ak ∣testovacia statistika∣>∣kriticka hodnota∣→ **Zamietame H0​**.
+	- V opačnom prípade H0​ **nezamietame**.
+
+---
+## 4. Klasifikácia znakov (Typy dát)
+
+Podľa učebnice (Lehrbuch) delíme znaky na základe úrovne merania:
+
+| Úroveň znaku    | Charakteristika                         | Príklad                            | Vhodná operácia   |
+| --------------- | --------------------------------------- | ---------------------------------- | ----------------- |
+| **Nominálna**   | Len názvy, žiadne poradie.              | Pohlavie, farba, typ motora.       | Modus             |
+| **Ordinálna**   | Dá sa určiť poradie, ale nie rozdiel.   | Spokojnosť (malá, stredná, veľká). | Medián            |
+| **Intervalová** | Vieme určiť rozdiel, nula je relatívna. | Teplota v °C, dátum.               | Priemer, Rozptyl  |
+| **Pomerná**     | Existuje prirodzená nula.               | Hmotnosť, dĺžka, počet kusov.      | Všetky štatistiky |
+
+Exportovať do Tabuliek
+
+### Ďalšie delenie:
+
+- **Diskrétne:** Nadobúdajú len celé hodnoty (napr. počet detí).
+- **Spojité:** Nadobúdajú akúkoľvek hodnotu z intervalu (napr. výška 175,5 cm).
+
+---
+
+## 5. Základné štatistiky
+
+- **Aritmetický priemer (xˉ):** Súčet hodnôt delený ich počtom.
+    
+- **Medián (x~):** Stredná hodnota v usporiadanom rade. Odolný voči extrémnym hodnotám (outlierom).
+    
+- **Modus (mod):** Najčastejšie sa vyskytujúca hodnota v súbore.

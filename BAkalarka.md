@@ -15,3 +15,107 @@ vytlacit v edise
 
 navrh som riesil dostupnym API
 
+## 1. Úvod (1,5 – 2 strany)
+
+- **Motivácia:** Prečo je v dnešnej dobe dôležité zjednocovať výsledky z viacerých zdrojov.
+    
+- **Problém:** Náročnosť manuálneho prehľadávania viacerých špecializovaných platforiem.
+    
+- **Cieľ práce:** Návrh a implementácia efektívneho, rýchleho a bezpečného meta vyhľadávača s moderným webovým rozhraním.
+    
+- **Prínos:** Vytvorenie nástroja, ktorý šetrí čas a poskytuje relevantnejšie výsledky vďaka agregácii.
+    
+
+---
+
+## 2. Analýza problematiky (5 – 7 strán)
+
+- **2.1 Analýza potreby:** Detailný rozbor fenoménu informačného prehltenia a fragmentácie dát na internete.
+    
+- **2.2 Teória vyhľadávania:**
+    
+    - Princíp fungovania indexových vyhľadávačov (Crawler -> Index -> Query).
+        
+    - Princíp meta vyhľadávania (bez vlastného indexu, dopytovanie v reálnom čase).
+        
+- **2.3 Existujúce riešenia:** Rešerš nástrojov ako DuckDuckGo (pôvodne meta), SearXNG (open-source meta vyhľadávač) a ich silné/slabé stránky.
+    
+
+---
+
+## 3. Analýza a výber technológií (6 – 8 strán)
+
+- **3.1 Porovnanie programovacích jazykov:**
+    
+    - Kritériá (výkon, asynchrónnosť, bezpečnosť, skúsenosti).
+        
+    - Analýza kandidátov: Python, C++, Rust (podrobná obhajoba výberu Rustu).
+        
+- **3.2 Ekosystém jazyka Rust:**
+    
+    - **Tokio:** Runtime pre asynchrónne I/O operácie.
+        
+    - **Serde:** Framework pre efektívnu serializáciu a deserializáciu dát.
+        
+    - **Axum/Actix-web:** Výber webového frameworku pre backend.
+        
+    - **Reqwest:** HTTP klient pre komunikáciu s externými API.
+        
+- **3.3 Výber informačných zdrojov:** Analýza dostupných API (Google, Bing, Wikipedia) a legálne aspekty automatizovaného získavania dát (scraping vs. API).
+    
+
+---
+
+## 4. Návrh konceptu a architektúry (5 – 7 strán)
+
+- **4.1 Konceptuálny návrh:** Diagramy toku dát (Data Flow) – od dopytu používateľa cez paralelné spracovanie až po zobrazenie výsledkov.
+    
+- **4.2 Architektúra systému:** Návrh modulov (Engine Trait, Aggregator, UI).
+    
+- **4.3 Dizajn používateľského rozhrania:** Drôtové modely (Wireframy) pre hlavnú stránku a zobrazenie výsledkov.
+    
+- **4.4 Dátový model:** Definícia štruktúr (`struct`) v Ruste pre unifikovaný výsledok vyhľadávania.
+    
+
+---
+
+## 5. Implementácia (8 – 10 strán)
+
+- **5.1 Štruktúra projektu:** Rozbor organizácie kódu a modulov (`src/engines`, `src/handlers`, atď.).
+    
+- **5.2 Paralelné dopytovanie:** Implementácia asynchrónnej logiky (použitie `futures::future::join_all` na súbežné volanie zdrojov).
+    
+- **5.3 Normalizácia dát:** Proces transformácie rôznych formátov (JSON z API, HTML zo scrapingu) do jednotnej štruktúry.
+    
+- **5.4 Algoritmus zoraďovania (Ranking):** Logika zoradenia výsledkov (napr. podľa relevancie, rýchlosti zdroja alebo duplicity).
+    
+
+---
+
+## 6. Testovanie a hodnotenie výkonu (4 – 5 strán)
+
+- **6.1 Metodika testovania:** Definícia testovacích scenárov a použitých nástrojov na meranie latencie.
+    
+- **6.2 Výsledky meraní:** Porovnanie časov odozvy pri rôznom počte zapojených zdrojov.
+    
+- **6.3 Kvalita výsledkov:** Subjektívne a objektívne zhodnotenie relevantnosti nájdených informácií.
+    
+
+---
+
+## 7. Dokumentácia a nasadenie (2 – 3 strany)
+
+- **7.1 Nasadenie aplikácie:** Postup kompilácie (`cargo build --release`) a možnosti nasadenia (napr. Docker kontajner).
+    
+- **7.2 Používateľská príručka:** Návod na spustenie a ovládanie aplikácie doplnený o screenshoty finálneho produktu.
+    
+
+---
+
+## Záver (1 – 1,5 strany)
+
+- Zhodnotenie splnenia cieľov práce.
+    
+- Prínos práce pre autora (nadobudnuté skúsenosti s jazykom Rust).
+    
+- Návrhy na ďalšie vylepšenia (pridanie personalizácie, podpora ďalších jazykov, pokročilé filtrovanie).
