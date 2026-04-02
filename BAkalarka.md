@@ -13,7 +13,15 @@ vytlacit v edise
 
 1.7. promocie
 
-navrh som riesil dostupnym API
+Dalsie funkcie stranky:
+Nutné pridať
+Wireframe
+Diagramy
+Testy
+
+Vylepšenia
+HTTPS
+Mobilne GUI
 
 ## 1. Úvod (1,5 – 2 strany)
 
