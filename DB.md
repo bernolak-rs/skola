@@ -11,7 +11,7 @@ Databázový systém tvoria:
 - Používatelia
 
 DML (Data Manipulation Language) - Select, Update, Delete, Insert  
-DDL (Data Definition Language) - Create, Alter, Drop - automaticky robi commit  
+DDL (Data Definition Language) - Create, Alter, Drop - automaticky robi commit  (aj pri triggri)
 DCL (Data Control Language) - Grant, Revoke
 TCL (Transaction Control Language) - Commit, Rollback
 
@@ -838,6 +838,47 @@ SQLERRM -- error message
 SQLCODE -- cislo erroru
 
 -- V triggri neodchytavame vynimku ale vyvolavame
+declare 
+ v_cislo integer;
+ delenie_nulou exception;
+ PRAGMA EXCEPTION_INIT(delenie_nulou, -01476);
+begin
+ v_cislo:=5/0;
+ raise_application_error(-20000, 'chyba'); -- -20 999; -20 000
+ exception 
+  when delenie_nulou then dbms_output.put_line('Delenie nulou');
+  when others then 
+   dbms_output.put_line(SQLCODE);
+   dbms_output.put_line(SQLERRM);
+end;
+/
+
+create table log_tab(os_cislo integer, kto varchar(20), kedy date);
+
+create or replace trigger trig_st
+after update on student
+for each row
+begin
+ insert into log_tab values(:new.os_cislo, user, sysdate);
+end;
+/
+
+create or replace trigger trig_st_zmena_oc
+before update on student
+for each row
+begin
+ if :old.os_cislo<>:new.os_cislo then 
+  raise_application_error(-20000, 'Nemozes menit osobne cislo');
+end if;
+end;
+/
+
+update student set rocnik=2 
+ where rocnik=1;
+ 
+select * from log_tab; 
+
+rollback;
 ```
 
 # Prednaska 7 - Normalizacia

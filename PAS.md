@@ -271,6 +271,7 @@ jednostranny interval:
 max chyba odhadu
 - maximalna mozna hodnota odchylenia od skutocnej hodnoty parametra
 
+# Prednaska 7
 Statisticka hypoteza
 - Testovanie - 
 - testovacia statistika
@@ -278,7 +279,6 @@ Statisticka hypoteza
 - kriticka oblast
 - zamietnutie nulovej hypotezy - data nepodporuju nulovu hypotezy, nieco sposobilo velku odchylku
 - signifikantny - statisticky vyznamny, rozdiel nie je nahodny
-
 
 Poznamky chata
 ## 1. Štatistická hypotéza
@@ -366,3 +366,28 @@ Exportovať do Tabuliek
 - **Medián (x~):** Stredná hodnota v usporiadanom rade. Odolný voči extrémnym hodnotám (outlierom).
     
 - **Modus (mod):** Najčastejšie sa vyskytujúca hodnota v súbore.
+
+
+# 8. Prednaska
+- **Štatistické testovanie hypotéz**: Hlavnou myšlienkou je posúdiť pravdepodobnosť, s akou by sme získali daný alebo ešte extrémnejší výsledok z výberu (vzorky), ak by platilo pôvodné tvrdenie.
+- **Hladina významnosti (α)**: Vopred zvolená hranica (často 0,05), ktorá určuje, kedy považujeme výsledok za dostatočne nepravdepodobný na to, aby sme zamietli nulovú hypotézu H0​.
+
+- **Nulová hypotéza (H0​)**: Pôvodné tvrdenie, o ktorého platnosti rozhodujeme. Ak ju zamietneme, považuje sa to za pozitívny výsledok testu.
+
+- **Chyba prvého druhu (α-Fehler)**: Nastáva vtedy, ak je H0​ v skutočnosti platná, ale my ju na základe dát zamietneme. Označuje sa ako "falošne pozitívny" výsledok.
+- **Chyba druhého druhu (β-Fehler)**: Nastáva vtedy, ak H0​ neplatí, ale my ju na základe dát nezamietneme. Ide o "falošne negatívny" výsledok, kedy prehliadame skutočný objav.
+
+- **Sila testu (Teststärke)**: Pravdepodobnosť (1−β), že správne zamietneme H0​, keď je v skutočnosti neplatná. Vyjadruje citlivosť nástroja na odhalenie nepravdivosti hypotézy.
+
+- **p-hodnota (p-Wert)**: Najmenšia hladina významnosti α, pri ktorej by sme na základe danej vzorky ešte zamietli H0​. Meria, ako veľmi sú dáta v rozpore s nulovou hypotézou.
+	- Ak je **p-hodnota ≤α**, zamietame H0​.
+	- Ak je **p-hodnota >α**, nezamietame H0​.
+
+- **χ2-test dobrej zhody**: Test, pri ktorom sa overuje, či sa empirické rozdelenie (namerané dáta) zhoduje s teoretickým rozdelením.
+
+- **Kolmogorovov-Smirnovov test**: Jednovýberový test používaný na overenie, či náhodný výber pochádza z určitého spojitého rozdelenia.
+
+- **Dvojvýberový štatistický test**: Používa sa na testovanie rozdielu hodnôt toho istého parametra (napr. strednej hodnoty) v dvoch rôznych vzorkách.
+	- **Parametrický test**: Používa sa, ak sú obe vzorky z normálneho rozdelenia.
+	
+	- **Neparametrický test**: Používa sa, ak aspoň jedna vzorka nie je z normálneho rozdelenia.

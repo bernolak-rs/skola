@@ -14,6 +14,7 @@ vytlacit v edise
 1.7. promocie
 
 Dalsie funkcie stranky:
+Ziskat vlastnu API pre semantic scholar
 Nutné pridať
 Wireframe
 Diagramy
@@ -22,6 +23,21 @@ Testy
 Vylepšenia
 HTTPS
 Mobilne GUI
+
+Co mozes dopisat
+presnejsia implementacia pripojenia na databazu
+
+docker
+pouzivame debian, alpine mal problem s C kniznicami a debian matchoval s rust: slim-bookworm
+
+Dopis
+Funkcie na databaze - upravenie pripajania na databazu kvoli dockery
+web server
+frontend doplnt technicke informacie k jednotlivym oknam
+testovanie
+Rust doc
+Pouzivatelska prirucka
+Zaver
 
 ## 1. Úvod (1,5 – 2 strany)
 
