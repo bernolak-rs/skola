@@ -391,3 +391,5 @@ Exportovať do Tabuliek
 	- **Parametrický test**: Používa sa, ak sú obe vzorky z normálneho rozdelenia.
 	
 	- **Neparametrický test**: Používa sa, ak aspoň jedna vzorka nie je z normálneho rozdelenia.
+
+ - nezavisle testy maju rozny pocet (n) vyberov 
