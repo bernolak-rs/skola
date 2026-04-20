@@ -13,19 +13,19 @@ vytlacit v edise
 
 1.7. promocie
 
+
 Dalsie funkcie stranky:
 Ziskat vlastnu API pre semantic scholar
 Nutné pridať
 Wireframe
 Diagramy
-Testy
-
-Vylepšenia
-HTTPS
-Mobilne GUI
+mozno vyriesit ukladanie vyhadavanych fraz v databaze v hash
+DuckDuckGo
+Pri odstraneni duplikatov ukazat ze to je z viacerych zdrojov
 
 Co mozes dopisat
 presnejsia implementacia pripojenia na databazu
+hesovanie
 
 docker
 pouzivame debian, alpine mal problem s C kniznicami a debian matchoval s rust: slim-bookworm
