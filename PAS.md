@@ -393,3 +393,34 @@ Exportovať do Tabuliek
 	- **Neparametrický test**: Používa sa, ak aspoň jedna vzorka nie je z normálneho rozdelenia.
 
  - nezavisle testy maju rozny pocet (n) vyberov 
+
+# Prednaska 9
+zavislost 
+- funkčná y = f(x)
+- pravdepodobnostna X -> P(y) ako pocet opakovani meni pravdepodobnost
+ale toto uz vieme :)
+- štatistická zavislosť y = f(x) + epsilon (chyba)
+- y je zavisla, vystupna, abhängige - lebo vieme jasne urcit z f(x)
+- f(x) je nezavisla, vstupna, prediktor, feature, unabhängige - nemusime spravne urcit z y
+
+Kauzalita - pricinnost, jedno sposobuje druhe, to statisticka suvislost nevie potvrdit
+ - nieco sposobuje nieco
+
+štatisticka suvislost vyjadrena ciselne = korelacia
+
+kovariancia vyjadruje mieru spolocnej variability dvoch premennych
+- urcuje smer vztahu
+- ak je okolo 0 tak si premenne robia co chcu
+
+Pearson koeficient r
+- kovarianciu predelime smerodajnymi odchylkami
+pozitivna - stupaju spolu r > 0
+negativna - jedna stupa a druha klesa r < 0
+čím viac od nuly, tym silnejsia korelacia
+
+Spearmanov koeficient rsp
+- ked sa neda pouzit pearsonov
+- namiesto hodnot sa vypocitava poradiami
+
+funkcia rank pre poradia
+
