@@ -27,6 +27,11 @@ Mobilne GUI
 Co mozes dopisat
 presnejsia implementacia pripojenia na databazu
 
+i wanna create browser mockup that has SmartSearch name in the middle and test prompt under it with pill design
+I'll create a browser mockup with SmartSearch branding and a pill-shaped search input.
+
+I've created a browser mockup featuring SmartSearch with a clean, modern design. The mockup includes realistic browser chrome with window controls and an address bar, the SmartSearch branding prominently displayed in the center, and a pill-shaped search input with an integrated search button below it.
+
 docker
 pouzivame debian, alpine mal problem s C kniznicami a debian matchoval s rust: slim-bookworm
 
