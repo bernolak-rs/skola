@@ -13,6 +13,7 @@ vytlacit v edise
 
 1.7. promocie
 
+## Zmen datum na vyhlaseni
 
 Dalsie funkcie stranky:
 Ziskat vlastnu API pre semantic scholar

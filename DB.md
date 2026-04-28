@@ -779,6 +779,7 @@ VSETKO CO SME MALI ODCVICENE DOTERAZ
 	- viazu sa na DML
 	- [DEKLARACNA CAST] begin TELO[exception handler(viaze sa na telo)] end; / (terminator)
 - v sql nemame procedury(nevracaju navratovu hodnotu)
+SELECT x INTO y - musi vratit 1 zaznam 
 
 ```sql
 v_priezvisko os_udaje.priezvisko%type --da rovnaky typ ako os_udaje.priezvisko
@@ -919,3 +920,116 @@ ST_SK      -> PSC
          -> obec
 
 moze byt tabulka s jednym atributom ktory je KPK ale nema determinant!!!
+
+# Prednaska 8 - Velka noc
+# Prednaska 9 - View
+```sql
+create or replace view v_student
+as
+ select meno, priezvisko, rod_cislo, os_cislo, st_odbor, st_zameranie,
+    rocnik, st_skupina
+  from student join os_udaje using (rod_cislo)
+   where rocnik=2;
+   
+desc os_udaje;
+
+insert into v_student
+ values('Michal', 'Kvet', '551124/1234', 20000, 100, 0, 1, '5ZI011');
+
+create or replace trigger trig_v_st
+ instead of insert on v_student
+  --for each row -- instead of je automaticky for each row
+begin
+ insert into os_udaje(meno, priezvisko, rod_cislo)
+  values(:new.meno, :new.priezvisko, :new.rod_cislo);
+ insert into student(rod_cislo, os_cislo, st_odbor, st_zameranie, rocnik, st_skupina)
+  values(:new.rod_cislo, :new.os_cislo, :new.st_odbor, :new.st_zameranie, 
+        :new.rocnik, :new.st_skupina); -- hodnoty mozme aj natvrdo napisat sem
+end;
+/
+
+rollback;
+
+create or replace view v_osoba_P
+ as select * from os_udaje
+  where meno like 'P%'
+   --with check option
+   ;
+
+select * from v_osoba;
+
+insert into v_osoba values('551124/1234', 'Michal', 'Kvet', null, null, null);
+
+create or replace view v_osoba_K
+ as select * from v_osoba_P
+  where priezvisko like 'K%'
+   with check option; -- check nie je determenisticka
+
+insert v_osoba_K values('551124/1234', 'Michal', 'Kvet', null, null, null);
+
+----------------------------------------------------------------------------
+-- Cured
+-- C - column - NULL, NOT NULL, UNIQUE - KPK
+-- U - user - suvisi aj s datumami, s mnozstvom zapisani predmetu
+-- R - referential - FK - NULL, ref. PK
+-- E - entity - PK - unique, minimal, NN
+-- D - domain - datovy typ, domena - check
+
+desc zap_predmety;
+-- odtial som nestihal
+create table ucitel_tab
+ (os_cislo integer,
+  meno varchar2(20), 
+  priezvisko varchar2(20),
+  );
+
+create table katedra_tab
+(
+    id_katedry integer,
+    
+)
+```
+# Prednaska 10 - Cas
+sysdate = server cas
+current_date = klient cas
+
+date
+timestamp je presnejso ako date
+
+D den v tyzdni
+DD den v mesiaci
+DDD den v roku
+Day 
+MM cislo mesiaca
+Month meno mesiaca
+Mon meno mesiaca
+YYYY / RRRR rok
+YY / RR posledne 2 cifry roku
+HH24 hodina
+MI minuta
+SS sekunda
+W week poradove cislo tyzdna v mesiaci
+WW week poradove cislo tyzdna v roku
+Q quartal
+
+select to_date('5.2024', 'MM.YYYY') <- vrati 1.5 2024
+select to_date('5.2024', 'DD.YYYY') <- vrati 5.aktualny mesiac 2024
+
+last_day = posledny den mesiaca
+
+next_date funkcia, ktora funguje ako next_day, ale aj v amerike aj u nas
+
+select DATE '12-4-2024' from dual;
+
+## Kurzory
+- objekt v jazyku SQL a spristupnuje zaznamy z prikazu select
+DECLARE
+OPEN
+FETCH
+UPDATE/DELETE
+CLOSE - v oracle sa dealokuje
+
+# 2. Zapocet
+kurzor jednoduchsi (spojit tabulky a zaznamy textovo)
+procedury/funkcie/triggre
+views
