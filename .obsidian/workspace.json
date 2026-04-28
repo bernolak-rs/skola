@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DB.md",
+                "file": "Anj.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "DB"
+              "title": "Anj"
             }
           },
           {
@@ -199,9 +199,9 @@
   },
   "active": "363c8b97eeddde37",
   "lastOpenFiles": [
+    "DB.md",
     "BAkalarka.md",
     "PAS.md",
-    "DB.md",
     "Prax.md",
     "AUS.md",
     "Anj.md",
