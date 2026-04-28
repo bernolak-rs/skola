@@ -1025,11 +1025,43 @@ select DATE '12-4-2024' from dual;
 - objekt v jazyku SQL a spristupnuje zaznamy z prikazu select
 DECLARE
 OPEN
+LOOP
 FETCH
 UPDATE/DELETE
+END LOOP
 CLOSE - v oracle sa dealokuje
 
+Typy kurzorov
+- sekvencny kurzor
+- posuvny kurzor
+- kurzor pre zmeny
 # 2. Zapocet
+not in not exists
+joiny
+agregacne funkcie
 kurzor jednoduchsi (spojit tabulky a zaznamy textovo)
 procedury/funkcie/triggre
 views
+
+
+### ACID
+- atomicity - atomickost
+- consistency - CRUDE 
+- isolation - UNDO je v db a REDO je v pamati az do commit
+- durability - trvanlivost, po commite sa nestrati operacia
+
+### CRUDE
+- Column - stlpcova sa viaze na jeden atribut
+- Reference - referencna sa viaze na FK 1/1,2
+- Entity - entitna na celu tabulku
+- Domain - domenova na viacero atributov v jednej tabulke
+- User - pouzivatelska na viacero tabuliek a atributov
+
+### Vlastnosti relacie
+- neobsahuje duplicitne n-tice
+- n-tice su neusporiadane
+- m-tice atributov su neusporiadane
+- hodnoty atributov su atomicke
+
+### Kardinalita Relacie/Tabulky
+- pocet zaznamov 
