@@ -424,3 +424,10 @@ Spearmanov koeficient rsp
 
 funkcia rank pre poradia
 
+# Cvicenie 11
+## Kovariancia
+podobne ako rozptyl
+komutativne
+
+## Korelacia
+vyjadruje mieru zavislosti 2 premennych
