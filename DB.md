@@ -1035,14 +1035,6 @@ Typy kurzorov
 - sekvencny kurzor
 - posuvny kurzor
 - kurzor pre zmeny
-# 2. Zapocet
-not in not exists
-joiny
-agregacne funkcie
-kurzor jednoduchsi (spojit tabulky a zaznamy textovo)
-procedury/funkcie/triggre
-views
-
 
 ### ACID
 - atomicity - atomickost
@@ -1064,4 +1056,163 @@ views
 - hodnoty atributov su atomicke
 
 ### Kardinalita Relacie/Tabulky
-- pocet zaznamov 
+- pocet zaznamov
+
+# 2. Zapocet
+not in not exists
+joiny
+agregacne funkcie
+kurzor jednoduchsi (spojit tabulky a zaznamy textovo)
+procedury/funkcie/triggre
+views
+Selecty 2 
+Alter joiny 
+Right join 
+Left join 
+Agregacne funkcie 
+Having 
+Where 
+Group by 
+In exists 
+Pohľad trigger procedúra funkcia 
+Vymazavanie z tabuľky 
+Pridať check constraint
+Dnešný zápočet(formulácia nie je totožná, ale princíp ostáva):
+
+- Trigger: zabezpečte aby vkladaný zamestnanci neboli mladší 16 rokov
+- view: urobte pohlaď, ktorý zobrazí ZTP, ktorým končí status o mesiac
+- funkcia: zobrazte príspevky na základe roku
+- Selecty:
+    
+    - vypíšte poberateľov, ktorý majú aspoň 3 príspevky
+    - vypíšte sumu odvodov poistencov
+    - (niečo so sumou, už nepamätám)
+    
+- ABCD: tabuľka ktorá má inserty a zvoľ čo vráti 3
+- Bonus: vypíš poberatelov, ktorý mali aspoň 5 príspevok vyplatené za posledné dva mesiace
+
+1.Vypíšte koľko unikátnych typov príspevku bolo vyplatených v minulom roku 
+2.Vypíšte priemernú sumu odvodenu do poisťovne za minuly rok 
+3.Napíš trigger ktorý zabezpečí ze aktualizáciu záznamu v tabuľke p_poistenje môže vykonať len používateľ admin_poistovna 
+4.Vytvorte funkciu ktorá pre zadanú osobu vráti informáciu o tom ci je akt. Zamestnaná Tieto otazky som si zapamätal čo som mal dnes
+
+1. cca taketo ulohy boli na dnesnom započte: 1.Výtvor funkciu ktorá vráti počet zamestnancov vo firme na základe ICO. 
+2. nápis trigger ktorý zabezpečí že sa nedá pridať nový zamestnávateľ do mesta s názvom ‘Bratislava’ v sobotu alebo nedelu
+3. Ku každému okresu výpis jeho nazov. Ak ma mesta, vypíšte ich názvy. Zobrazíte aj okresy bez miest
+4. pre každé mesto výpis počet osôb, ktoré v nom bývajú. V prípade že nikto uveďte 0. 
+5. Výtvor pohľad ktorý bude obsahovať všetky zamestnané osoby spolu s informáciami o zamestnávateľovi 
+6. Výpis koľko poistencov je aktuálne oslobodených od platenia príspevkov 
+7. ABCD otazka Ktorý prikaz ti vratí čislo 3 
+8. Asi to bol ten bonus CREATE TABLE s nejakými podmienkami
+
+# Prednaska 12
+RBO - rule based optimization - poradie prikazov - stary styl
+CBO - cost based optimization - podla nakladov na vypocet
+### select robi:
+- projekcia - redukovanie mnozstva stlpcov -- napr. *, meno, priezvisko, rc, ...
+- selekcia - redukovanie mnozstva riadkov -- napr. za where keyword
+
+## spojenie:
+- inner
+- outer - left, right, full
+
+### prirodzene spojenie / natural join 
+- spojim tabulky bez using / on na zaklade rovnakeho nazvu atributu
+- pokial nemam atribut s rovnakym nazov atributov, tak spoji kartezskym sucinom
+```sql
+select *
+  from os_udaje natural join student;
+```
+
+### V podmienke on mozme pouzit = != < >
+- ked chcem spojit napriklad roznych ludi z rovnakej tabulky
+### Kartezsky sucin
+```sql
+select * 
+  from tab cross join tab2;
+
+select *
+  from student join st_odbory using(st_odbor); -- tiez KS
+ 
+```
+
+### Legacy joins
+```sql 
+select *
+  from os_udaje, student
+  where student.rod_cislo=os_udaje.rod_cislo; -- stary sposob spajania tabuliek
+
+select *
+  from os_udaje, student
+  where student.rod_cislo(+)=os_udaje.rod_cislo; -- stary sposob spajania tabuliek
+
+select rod_cislo, meno, priezvisko, os_cislo, rocnik
+ from os_udaje join student using (rod_cislo); -- projekcia, spojenie
+
+select rod_cislo, meno, priezvisko, null, null
+  from os_udaje
+    where not exists (
+	    select 'x' from student
+	      where student.rod_cislo=os_udaje.rod_cislo
+    ); -- projekcia, selekcia
+
+```
+
+### Zjednotenie
+```sql
+-- LEFT JOIN
+-- zjednotenie - UNION
+select rod_cislo, meno, priezvisko, os_cislo, rocnik
+ from os_udaje join student using (rod_cislo)
+UNION
+select rod_cislo, meno, priezvisko, null, null
+  from os_udaje
+    where not exists (
+	    select 'x' from student
+	      where student.rod_cislo=os_udaje.rod_cislo
+    )
+    order by os_cislo nulls first; -- zjednotenie, selekcia, projekcia a spojenie  
+    
+-- union kompatibilne selekty 
+-- 1. rovnaky pocet atributov
+-- 2. rovnake typy
+-- 3. poradie atributov
+-- 4. vyznam hodnot atributov
+
+-- rozny vyznam atributov !!
+select meno from os_udaje
+UNION
+select priezvisko from os_udaje;
+
+UNION -- potlaca duplicity
+UNION ALL -- to nerobi
+```
+
+### Rozdiel
+```sql
+select meno, priezvisko from os_udaje
+MINUS
+select meno, priezvisko from ucitel;
+```
+
+### Prienik
+```sql
+
+select meno, priezvisko from os_udaje
+INTERSECT -- prienik
+select meno, priezvisko from ucitel;
+
+```
+
+### Delenie
+```sql
+create table st1 as select os_cislo, rod_cislo, st_zameranie, rocnik
+					 from student;
+
+create table st2 as select os_cislo, st_odbor, st_skupina, stav, ukoncenie, dat_zapisu
+					 from student;
+
+select *
+  from st1 join st2 using (os_cislo) -- povodny student
+```
+- musime spajat Kandidatom primarneho kluca
