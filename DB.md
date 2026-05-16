@@ -1,4 +1,4 @@
-D# Databazove Systemy
+# Databazove Systemy
 
 ## Basics
 
@@ -44,14 +44,15 @@ Formaty datumov
 - `MI`
 - `SS`
 
-| Skratka | Meaning                   | Popis                                                                                                                                 |
-| ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `NN`    | Not Null                  | Hodnota musi byt zadana, nemoze byt Null                                                                                              |
-| `PK`    | Primary Key               | Primarny, unikatny kluc v tabulke, je `NN`, **je najviac jeden** (moze byt kompozitny - skladat sa z viacerych atributov?), minimalny |
-| `FK`    | Foreign Key               | Odkazuje na primarny kluc z inej tabulky, moze byt aj Null                                                                            |
-| `PFK`   | Primary Foreign Key       | Primary + Foreign                                                                                                                     |
-| `KPK`   | Kandidat primarneho kluca | Nieco, co teoreticky moze byt tiez primarny kluc, Unikatny,not null, minimalny                                                        |
-| SK      | Super kluc                | Unikatny,not null, nie minimalny                                                                                                      |
+| Skratka | Meaning                   | Popis                                                                                                                       |
+| ------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `NN`    | Not Null                  | Hodnota musi byt zadana, nemoze byt Null                                                                                    |
+| `PK`    | Primary Key               | unikatny a minimalny kluc v tabulke, je `NN`, **je najviac jeden** (moze byt kompozitny - skladat sa z viacerych atributov) |
+| `FK`    | Foreign Key               | Odkazuje na primarny kluc z inej tabulky, moze byt aj Null                                                                  |
+| `PFK`   | Primary Foreign Key       | Primary + Foreign                                                                                                           |
+| `KPK`   | Kandidat primarneho kluca | Nieco, co teoreticky moze byt tiez primarny kluc, Unikatny,not null, minimalny                                              |
+| SK      | Super kluc                | Unikatny,not null, nie minimalny, set atributov, urcujucich cely zaznam                                                     |
+| AK      | Alternativny kluc         | Je KPK ale nie je PK                                                                                                        |
 
 ## SELECT
 
@@ -292,7 +293,7 @@ Typ vztahu
 ----- Neidentifikacny vztah (ciarkovana ciara) - FK
 ____Identifikacny vztah (plna ciara) - PFK
 
-Kardinalita
+Kardinalita vztahu
 - 1:1 - Jeden student by mal prave jedny osobne udaje a naopak
 - 1:N - Student - Zap_predmety, os_udaje - student
 - M:N - musime vytvorit novu tabulku - asociativna entita, ktora bude mat kompozitny primarny kluc zostaveny z prepojenych tabuliek - napr. zap_predmety zo vztahu student - predmet - vytvara identifikacny vztah
@@ -301,6 +302,27 @@ Kardinalita
 - N - sa znaci rozvetvenim
 
 M:N vznika asociacna entita
+
+```sql
+alter table prvok
+	add pocet number
+	constraint pocet_rozsah check (pocet >= 10 and pocet <= 50);
+	
+alter table prvok 
+	add pocet number;
+alter table prvok
+	add constraint pocet_rozsah
+	check (pocet between 10 and 50);
+	
+alter table zap_predmety
+  add constraint znamka
+  check (vysledok='A' or vysledok='B' or vysledok='C' or vysledok='D' or
+  vysledok='E' or vysledok='F');
+  
+alter table zap_predmety
+  add constraint znamka
+  check (vysledok in ('A', 'B', 'C', 'D', 'E', 'F'));
+```
 
 Clenstvo
 - povinne - FK - NN
@@ -886,8 +908,8 @@ rollback;
 Determinant - mnozina atributov z ktorej vychadzaju ine atributy
 1. cast 
 	- odstranit duplicity
-	- vsetky nevypocitatelne
-	- atomicke atributy
+	- odstranit vypocitatelne
+	- atributy musia byt **atomicke** 
 2. cast - uplna FZ
 	- uplna FZ - atribut je zavisly od celeho primarneho kluca (cize ked je KPK kompozitny)
 	- (CP, SK_ROK, OC) -> (RC ->Meno)
@@ -896,18 +918,27 @@ Determinant - mnozina atributov z ktorej vychadzaju ine atributy
 	- odrazeme na konci(A->B-/>C =(spravime 2 tabulky) A->B   B->C)
 	- vztah 1:1 treba premysliet ci to ma prinos
 
-Funkcna zavislost (FZ)
+## Funkcna zavislost (FZ)
 - vztah medzi 2 zavislostami
 - A -> B, podla A viem jednoznacne povedat B
-- OC -> RC, RC->Pohlavie to znamena OC -> Pohlavie
+- OC -> RC, RC->Pohlavie to znamena OC -> Pohlavie - tranzitivnost
 - determinant je ten na lavej strane pri prikladoch hore (vieme z neho vyvodit lavu stranu)
 - (CP, SK_ROK, OC) -> Vysledok
 - Login<->OC - vzajomna funkcna zavislost
 - A->B trivialna, elementarna, uplna
+### Typy zavislosti
+- Elementarna FZ - A→B, keď atribút A je atomický
+- Uplna FZ - (OsobneCislo, CisloPredmetu)→vysledok, Je to vtedy, keď na určenie výsledku **potrebuješ celú ľavú stranu**. Ak by si z nej niečo odobral, už ten výsledok nezistíš.
+- Vzajomna FZ - A <-> B
+- Tranzitivna FZ - R(A, B, C), A -> B, B -> C, tranzitivna je A -> C
+- Trivialna FZ - R(A, B) A -> B, ked B je podmnozinou A, (OC, RC) -> (OC, RC), (OC, RC) -> OC
+- Netrivialna FZ - R(A, B) A -> B, aspoň jeden z množiny atribútov B nie je z množiny atribútov A, (OC, RC) -> (OC, Meno)
+- Uplne netrivialna FZ - R(A, B) A -> B, ani je z mnoziny atributov B nie je z mnoziny atributov A, (OC, RC) -> (Meno, Priezvisko)
+
 
 ## 3NF
 1NF - odstranit duplicity, vsetky vypocitatelne, atomicke atributy
-2NF - kazdy atribut ktory netvori kluc je zavisli od celej mnoziny
+2NF - kazdy atribut ktory netvori kluc je zavisli od celej mnoziny PK
 3NF - nemam tam tranzitivny FZ od primarneho kluca
 
 ## Boyce- Codd normalna forma
@@ -1036,25 +1067,68 @@ Typy kurzorov
 - posuvny kurzor
 - kurzor pre zmeny
 
-### ACID
-- atomicity - atomickost
-- consistency - CRUDE 
-- isolation - UNDO je v db a REDO je v pamati az do commit
-- durability - trvanlivost, po commite sa nestrati operacia
+## TCL
+Chcem aby presla operacia bud cela, alebo vobec  
+Napr. bankove transakcie
+
+- `COMMIT` - potvrdit zmeny
+- `ROLLBACK` - zahodit vsetky zmeny
+
+Ak raz spravim commit, uz mi ziadny rollback nepomoze  
+Rollback sa vracia ku poslednemu commitu (resp. na zaciatok)
+
+**Transakcia** - ako transakcia sa chape, postupnost operacii read a write, vratane vypoctovych krokov. Niekedy sa sem radi aj dotaz. Na ulozenie zmien po transakcii sa pouzivaju TCL prikazy(Commit, Rollback). 
+### ACID - Vlastnosti Transakcie
+- atomicity - atomickost - Ak jedna časť transakcie zlyhá (napr. pri prevode peňazí sa peniaze odčítajú, ale nepripíšu), celá transakcia sa zruší (**ROLLBACK**) a databáza sa vráti do pôvodného stavu.
+- consistency -  CRUDE,  Transakcia musí previesť databázu z jedného platného stavu do druhého platného stavu
+- isolation - Transakcie bežia nezávisle od seba. Výsledok jednej transakcie nesmie byť viditeľný pre ostatné transakcie, kým nie je potvrdený (**COMMIT**)
+- durability - trvanlivost, Akonáhle dostaneš potvrdenie o commite, zmeny sú zapísané v trvalom úložisku
+
+## Relacna Integrita
+Zakladom je mnozina integritnych obmedzeni, ktore reprezentuju tvrdenia o datach, ktore musia v databaza platit
 
 ### CRUDE
-- Column - stlpcova sa viaze na jeden atribut
-- Reference - referencna sa viaze na FK 1/1,2
-- Entity - entitna na celu tabulku
-- Domain - domenova na viacero atributov v jednej tabulke
-- User - pouzivatelska na viacero tabuliek a atributov
+**Column**
+- stlpcova
+- sa viaze na jeden atribut
+- NULL / NN, UNIQUE 
+**Reference** 
+- referencna
+- sa viaze na FK 1/1,2
+- FK musi ma bud referovat na nejaky KPK z inej tabulky s ktorou je vo vztahu alebo byt null
+**Entity**
+- entitna
+- na celu tabulku
+- PK atributy musia byt NN a PK musi byt unikatny
+**Domain**
+- domenova
+- na viacero atributov v jednej tabulke
+- CHECK, IF *kontrola hodnoty*
+**User** 
+- uzivatelska
+- na viacero tabuliek a atributov
+- Deklarativny - Check, Proceduralny - Trigger
+- "Dávajú dáta zmysel? Nie je cena záporná? Je dátum dodania neskorší ako dátum objednávky?"
 
+**Domain vs User**
+- Doménová integrita určuje **množinu prípustných hodnôt** pre konkrétny stĺpec. Rieši to, či je hodnota vôbec „vhodného typu“ pre danú oblasť.
+- User integrity sú **špecifické biznis pravidlá**, ktoré nevyplývajú len z typu dát, ale z logiky tvojej aplikácie alebo firmy. Často porovnáva viacero stĺpcov medzi sebou.
+
+c - tabulka pouzivatel musi mat id vyplnene a unikatne
+u - nemozme mat skorej zaciatok studia ako koniec
+r - nemozme mat odkaz v tabulke objednavka - fk na zakaznika, ktory neexistuje
+e - musime mat v tabulke student unikatne id napr os_cislo
+d - vek nemozme by zaporne cislo
 ### Vlastnosti relacie
 - neobsahuje duplicitne n-tice
 - n-tice su neusporiadane
 - m-tice atributov su neusporiadane
 - hodnoty atributov su atomicke
-
+ANNU
+- A - atomicke atributy
+- N - neusporiadanost riadkov
+- N - neusporiadanost stlpcov
+- U - unikatnost riadkov pomocou PK
 ### Kardinalita Relacie/Tabulky
 - pocet zaznamov
 
@@ -1216,3 +1290,34 @@ select *
   from st1 join st2 using (os_cislo) -- povodny student
 ```
 - musime spajat Kandidatom primarneho kluca
+
+
+Priprava na skusku
+## I. ZÁKLADNÉ POJMY A VZŤAHY
+1. Vysvetli rozdiel medzi doménou a atribútom.
+	- Doména - mnozina hodnot, ktore splnaju typ alebo velkost pre dany atribut
+	- Atribut - stlpec v tablke, jedna premenna tabulky, ktora priraduje entitam hodnotu, ktoru obsahuje kazdy zaznam tejto entity(moze byt aj null)
+2. Definuj pojem entita, inštancia a atribút v kontexte databáz.
+	- Entita - predstavuje jednu tabulku
+	- Instancia - instancia predstavuje zaznam alebo riadok, ktory je vytvoreny podla vzoru entity a ma svoje hodnoty
+	- Atribut - stlpec tabulky, prideluje nejaku hodnotu vlastnosti entity
+3. Vysvetli pojem relácia a uveď základné vlastnosti relácie (ANNU).
+	- ANNU:
+		- A - atomicke atributy
+		- N - neusporiadanost riadkov
+		- N - neusporiadanost stlpcov
+		- U - unikatnost riadkov pomocou PK
+4. Aký je rozdiel medzi fyzickou a logickou nezávislosťou dát?
+5. Čo je kurzor a na čo slúži v databázovom systéme?
+	- kurzor je objekt jazyka SQL, ktory nam spristupnuje jednotlive zaznamy v mnozine ziskanej prikazom SELECT
+6. Čo je zdieľanosť dát a prečo je dôležitá?
+	- umoznuje nam poskytovat data viacerym klientom naraz, dolezita pre subeznost aplikacie, odstranuje redundanciu, pridava konzistenciu
+7. Vysvetli pojem union-kompatibilita. Ktoré operácie ju vyžadujú?
+	- dve mnoziny su union kompatibilne ak maju rovnaku mnozinu atributov. cize rovnaky pocet atributov s rovnakymi typmi
+8. Uveď dva príklady unárnych a dva binárnych operácií relačnej algebry.
+	- Unarne - projekcia, selekcia
+	- Binarne - kartezsky sucin, prienik, rozdiel, zjednotenie, delenie, spojenie
+9. Vysvetli rozdiel medzi projekciou a selekciou v relačnej algebre.
+	- Projekcia - redukcia stlpcov (atributy)
+	- Selekcia - redukcia riakov  (pocet zaznamov)
+10. 
