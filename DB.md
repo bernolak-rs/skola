@@ -1321,3 +1321,92 @@ Priprava na skusku
 	- Projekcia - redukcia stlpcov (atributy)
 	- Selekcia - redukcia riakov  (pocet zaznamov)
 10. 
+11. Čo je primárny kľúč? Aké vlastnosti musí mať?
+	- Primarny kluc je unikatny a minimalny. Musi byt not null a da sa nim jednoznacne ukazat na jeden zaznam (riadok) tabulky. Oznacujeme ho PK
+12. Čo je kandidátsky kľúč? Ako sa líši od superkľúča?
+	- Kandidatsky kluc je nieco co moze byt primarny kluc a ma jeho vlasnosti ako minimalnost, unikatnost a not null.
+	- Superkluc nesplna podmienku minimalnosti, cize moze obsahovat zbytocne atributy
+	- Plati teda ze kazdy KPK je SK ale nie kazdy SK je KPK
+13. Platí: každý superkľúč je zároveň aj kandidátsky kľúč? Odôvodni.
+	- Neplati. Superkluc nemusi splnat podmienku KPK minimalnosti. Plati teda ze kazdy KPK je SK ale nie kazdy SK je KPK.
+14. Čo je determinant? Môže byť každý determinant kandidátsky kľúč?
+	- Determinant je mnozina atributov, na ktorych je nejaky iny atribut funkcne zavisly. Na to aby bol nas determinant KPK musi byt na nom funkcne zavisly kazdy atribut. Mozme ale povedat ze kazdy KPK je determinant, nie naopak
+15. Definuj pojem funkčná závislosť.
+	 - Funkcna zavislost znamena ze vieme podla determinanta urcit nejaky atribut. Ak A -> B, tvrdime, ze B je funkcne zavisli od A 
+16. Vysvetli nasledovné typy funkčných závislostí: triviálna, netriviálna, elementárna, úplná, parciálna, tranzitívna, úplne netriviálna, vzájomná.
+	- trivialna - ked zavisli atribut je podmnozinou determinantu: A, B -> B
+	- netrivialna - ked aspon jeden zavisli atribut mnoziny B, nie je podmnozinou A, A -> B
+	- elementarna - ked je atribut A je atomicky: A -> B
+	- uplna - ked potrebujem celu lavu stranu na urcenie pravej strany: (A, B) -> C
+	- parcialna - ked mame (A, B) kluc, ale na C staci A -> C - Zakazuje 2NF
+	- tranzitivna - A -> B, B -> C ==> A -> C - Zakazuje 3NF
+	- uplne netrivialna - ked ani jeden atribut nie je podmnozinou determinantu: A, B -> C, D
+	- vzajomna - ked su mnoziny zavisle jedna od druhej (navzajom): A <-> B
+17. Vysvetli pojmy zjednotenie a dekompozícia množiny funkčných závislostí.
+	- zjednotenie mnozin funkcnych zavislosti - A -> B, A -> C = A -> (B, C)
+	- dekompozicia mnoziny funkcnych zavislosti - A -> (B, C) = A -> B, A -> C
+18. Aká je podmienka pre splnenie BCNF? Uveď definíciu presne.
+	- Relacia je v BCNF vtedy a len vtedy, ked kazdy determinant je Kandidatom PK.
+19. Vysvetli stručne, čo znamená, že relácia je v 1NF. Uveď príklad porušenia.
+	- Na to aby bola relacia v 1NF, musime odstranit vsetky opakujuce sa podskupiny dat, cize kazdy atribut musi byt atomicky.
+	- Napr atribut meno, ktory by obsahoval meno aj priezvisko.
+20. Kedy je relácia v 2NF? Uveď príklad relácie, ktorá je v 1NF, ale nie v 2NF.
+	- Relacia je v 2NF vtedy a len vtedy, ked je v 1NF a ked neklucovy atribut je uplne zavisli od celeho primarneho kluca.
+	- Pr pre 1NF bez 2NF je: (RC, OC) -> DatumNarodenia. Datum narodenia je zavisli len od RC
+21. Kedy je relácia v 3NF? Aký je hlavný rozdiel oproti 2NF?
+	- Relacia je v 3NF vtedy a len vtedy, ak je v 2NF ked kazdy neklucovy atribut nie je tranzitivne zavisly od primarneho kluca.
+	- V 2NF chceme odstranit parcialne zavislosti a v 3NF tranzitivne.
+22. Definuj Boyce-Coddovu normálnu formu (BCNF).
+	- Relacia R je v BCNF, vtedy a len vtedy, ked kazdy determinant je kandidatom primarneho kluca.
+	- Silnejsia ako 3NF
+23. 
+24. Vysvetli rozdiel medzi identifikačným a neidentifikačným vzťahom. Ako ich rozpoznáš zo schémy alebo SQL kódu?
+	- Identifikacny - plna ciara, FK je sucastou PK, cize mame PFK
+	- Neidentifikacny - ciarkovana ciara, FK nie je sucastou PK, cize name FK
+25.  Čo je povinné a nepovinné členstvo? Ako sa určuje z SQL kódu?
+	- Povinne - FK je NOT NULL, zaznam sa musi odkazovat na nejaky PK z inej tabulky
+	- Nepovinne - FK moze byt NULL, zaznam sa moze odkazovat na nejaky PK z inej tabulky
+26. V nasledujúcom opise urči typ členstva a kardinalitu:  
+    „Zamestnanec môže mať pridelené maximálne jedno auto, každé auto musí patriť jednému zamestnancovi.“
+	- Kardinalita: 0..1 : 1
+	- Chceme aby sa auto odkazovalo na zamestnanca pomocou FK, teda clenstvo je povinne.
+	- Ak by sme museli mat FK v zamestnancovi, clenstvo by bolo nepovinne
+27. Na čo sa viaže podmienka NOT NULL pri určovaní členstva vo vzťahu?
+	- Viaze sa na FK v tabulke, ktora nim referencuje zaznam z inej tabulky. NOT NULL znamena, ze mame povinne clenstvo
+28. Vysvetli ako sa určuje kardinalita medzi entitami pri identifikačnom a neidentifikačnom vzťahu.
+	- Pokial pri identifikacnom vztahu mame PK, tvoreny este inym atributom, vieme, ze mame 1:N. Ak je PK iba tento jeden atribut, ktory je PFK, tak vieme ze mame 1:1
+	- Ak mame neidentifikacny vztah, tak mame 1:N, pokial FK nie oznaceny ako UNIQUE, vtedy ide o 1:1
+29. Aký je rozdiel medzi atomickým a viacnásobným atributom? Uveď príklad pre každý.
+	- atomicky - je atribut, ktory je dalej nedelitelny, napr: Priezvisko
+	- viacnasobny - atribut, ktory obsahuje viacero hodnot, napr: Inventar (obsahuje objekty, ktore vlastni hrac, ulozene napr v texte)
+30. Vysvetli, čo je determinantný atribút a v čom sa líši od kandidátskeho kľúča.
+	- determinantsky atribut je atribut na ktorom je funkcne zavisla mnozina inych atributov. nemusi jednoznacne a minimalne identifikovat riadok tabulky 
+	- kpk je minimalny, unikatny identifikator zaznamu tabulky
+	- kazdy kpk je determinant, ale nie kazdy determinant je kpk
+31. Uveď štyri hlavné typy dátovej integrity v databázach.
+	- Stlpcova, Entitna, Domenova, Referencna, Uzivatelska
+32. Vysvetli, čo je integrita entít. Vzťahuje sa len na PK?
+	- Atribut, ktory je oznaceny ako PK nesmie nadobudat nedefinovane hodnoty (musi byt not null).
+	- Vztahuje sa len na PK
+33. Čo znamená referenčná integrita a ako sa zabezpečuje v SQL?
+	- Referencna integrita sa tyka vztahu medzi hlavnou a zavislou relaciou. Hlavna relacia ma PK kluc na ktory sa zavisla relacia odkazuje FK. FK sa musi odkazovat na hodnotu ktora existuje.
+```sql
+	  Alter table nazov
+		  add constraint fk_nazov1_nazov2
+		  foreign key (foreign_key) references (primary_key)
+```
+34. Vysvetli, čo je doménová a používateľská integrita. Uveď príklad.
+	- Domenova - Udava ake hodnoty su pripustne na priradenie pre urcity atribut zaznamu, kontroluje typ, alebo dlzku cisla / retazca
+	- Pouzivatelska - Tiez udava pripustne hodnoty, ale kontroluje ich logicke hodnoty, napr. interval, pritomnost podretazca
+35. 
+36. Vysvetli základné vlastnosti transakcií – čo znamená ACID?
+	- A - Atomicity - transakcia prejde uplne alebo vobec
+	- C - Consistency - transkacia prevedie databazu z platneho do platneho stavu
+	- I - Isolation - zmeny transakcie nie su viditelna pre inych klientov, az kym ich nepotvrdime commit 
+	- D - Durability - ako nahle dostaneme commit, zmeny su zapisane na trvalom ulozisku
+37. Na čo slúži SAVEPOINT a ako sa používa pri transakcii?
+	- savepoint sluzi ako miesto navratu, kde sa vieme vratit po vykonani nejakych prikazov, bez toho aby sme museli robit rollback na celu transakciu. vratime sa na miesto savepointu.
+38. Aký je rozdiel medzi COMMIT a ROLLBACK? Ako ovplyvnia vložené údaje?
+	- Commit - zapise vsetky transakcie do perzistentnej pamate
+	- Rollback - vrati nas na miesto posledneho commitu
+39. 
