@@ -1378,10 +1378,11 @@ insert into osoba (rod_cislo, meno, priezvisko, ulica, psc, obec)
 	- Doména - mnozina hodnot, ktore splnaju typ alebo velkost pre dany atribut
 	- Atribut - stlpec v tablke, jedna premenna tabulky, ktora priraduje entitam hodnotu, ktoru obsahuje kazdy zaznam tejto entity(moze byt aj null)
 2. Definuj pojem entita, inštancia a atribút v kontexte databáz.
-	- Entita - predstavuje jednu tabulku
+	- Entita - objekt realneho svete, ktory je jednoznacne odlisitelny od ostatnych objektov
 	- Instancia - instancia predstavuje zaznam alebo riadok, ktory je vytvoreny podla vzoru entity a ma svoje hodnoty
 	- Atribut - stlpec tabulky, prideluje nejaku hodnotu vlastnosti entity
 3. Vysvetli pojem relácia a uveď základné vlastnosti relácie (ANNU).
+	- relacia predstavuje samotnu tabulku
 	- ANNU:
 		- A - atomicke atributy
 		- N - neusporiadanost riadkov
@@ -1502,3 +1503,336 @@ Koniec
 	```
 
 Koniec
+
+```sql
+alter table zap_predmety
+  add constraint znamka
+  check (vysledok='A' or vysledok='B' or vysledok='C' or vysledok='D' or
+  vysledok='E' or vysledok='F');
+  
+alter table zap_predmety
+  add constraint znamka
+  check (vysledok in ('A', 'B', 'C', 'D', 'E', 'F'));
+  
+select distinct st_odbor
+ from student 
+ where os_cislo not in (
+    select os_cislo
+     from zap_predmety
+ );
+
+select id_typu 
+ from p_typ_prispevku
+ where id_typu not in (
+   select id_typu 
+    from p_poberatel 
+    where extract(year from dat_od)=2024
+);
+
+
+alter table prvok
+ add constraint check_pocet
+ check (pocet <= 50 and pocet >= 10);
+
+select count(*)
+ from p_zamestnavatel;
+
+-- Pre každé mesto vypíšte počet nezamestnaných osôb,
+-- ktoré v ňom bývajú, ak sú všetci zamestnaní, vypíš 0
+select n_mesta, count(*)
+    from p_mesto
+    left join p_osoba o using (psc)
+    left join p_zamestnanec z on o.rod_cislo=z.rod_cislo
+        AND (z.dat_do IS NULL OR z.dat_do > SYSDATE)
+        AND z.dat_od < SYSDATE
+    where z.rod_cislo is null OR o.rod_cislo IS NULL
+    group by n_mesta
+    order by count(*);
+
+SELECT p_mesto.n_mesta, 
+       COUNT(CASE 
+           WHEN p_osoba.rod_cislo IS NOT NULL AND NOT EXISTS (
+               SELECT 1 
+               FROM p_zamestnanec 
+               WHERE p_zamestnanec.rod_cislo = p_osoba.rod_cislo
+                 AND (p_zamestnanec.dat_do IS NULL OR p_zamestnanec.dat_do > SYSDATE)
+                 AND p_zamestnanec.dat_od < SYSDATE
+           ) THEN 1 
+       END) AS pocet_nezamestnanych
+FROM p_mesto
+LEFT JOIN p_osoba ON p_mesto.psc = p_osoba.psc
+GROUP BY p_mesto.n_mesta
+ORDER BY pocet_nezamestnanych;
+
+-- Vymaž typ príspevkov, ktoré nikto nikdy nepoberal Pozor na referečnú integritu
+delete from p_historia
+  where id_typu not in (
+    select id_typu
+      from p_poberatel
+  );
+
+delete from p_typ_prispevku
+  where id_typu not in (
+    select id_typu
+      from p_poberatel
+  );
+
+-- Definujte PK pre tabuľku p_zamestnanec
+alter table p_zamestnanec
+  add constraint pk_p_zamestnanec
+  primary key (id_zamestnavatela, rod_cislo, dat_od);
+
+-- vložte do tabuľky p_osoba nové záznamy z tabuľky nove_osoby (rovnaká štruktúra) 
+-- vlož len tie, ktoré tam nie sú
+insert into p_osoba (rod_cislo, meno, priezvisko, psc, ulica)
+  select rod_cislo, meno, priezvisko, psc, ulica
+    from nove_osoby
+    where not exists (
+      select 'x'
+        from p_osoba
+          where p_osoba.rod_cislo=nove_osoby.rod_cislo
+    );
+
+-- Napíšte trigger, ktorým zabezpečíte, že nový poistný záznam (p_poistenie) sa nedá
+-- vytvoriť, ak osoba má aktuálne aktívne poistenie
+create or replace trigger aktivne_poistenie
+before insert on p_poistenie
+for each row
+declare
+ v_pocet integer;
+begin
+    select count(*)
+      into v_pocet
+      from p_poistenie
+      where rod_cislo=:new.rod_cislo
+           and (dat_do is null or dat_do > sysdate)
+           and dat_od < sysdate;
+    if v_pocet <> 0 then
+      raise_application_error(-20000, 'Osoba ma aktivne poistenie');
+    end if;
+end;
+/
+
+-- napíš skript, ktorý do tabuľky lopata pridá atribút farba, ktorý je typu VARCHAR2(10)
+-- a môže nadobúdať iba hodnoty: modra, zelena, červená
+alter table lopata
+  add farba varchar2(10);
+alter table lopata
+  add constraint farba_lopaty
+  check (farba in ('modra', 'zelena', 'cervena'));
+
+//Majme atribút mnoztvo v tabuľke nákup, ktorý nech má dátový typ integer.
+//Zabezpečte, aby hodnota mohla byť len v rozsahu 1 až 255
+alter table nakup
+  add constraint chk_mnozstvo
+  check (mnozstvo between 1 and 255);
+
+//Vytvorte anonymný blok, v ktorom vypíšete na konzolu počet osôb,
+//ktorých priezvisko začína na písmeno V
+declare
+    v_pocet integer;
+begin
+    select count(*)
+        into v_pocet
+        from p_osoba
+        where priezvisko like 'V%';
+    dbms_output.put_line('Pocet osob s priezviskom zacinajucim na V: ' || v_pocet);
+end;
+/
+
+//Majme následujúce tabuľky
+create table tab1(id integer, id2 integer);
+create table tab2( a integer, b integer, c integer);
+//Definujte kompozitné primárne kľúče v oboch tabuľkách a vzťah kardinality 1:N
+//identifikačný vzťah a povinné členstvo
+alter table tab1
+    add constraint pk_tab1 primary key (id, id2);
+
+alter table tab2
+    modify a integer not null;
+
+alter table tab2
+    modify b integer not null;
+    
+alter table tab2
+    modify c integer not null;
+
+alter table tab2
+    add constraint pk_tab2 primary key (a, b, c);
+
+alter table tab2
+  add constraint fk_tab2_tab1 foreign key (a, b)
+  references tab1(id, id2);
+
+//ukonci poberatela ak ma percentualne vyjadrenie mensie ako 10
+update p_poberatel
+    set dat_do = sysdate
+    where perc_vyj < 10
+            and dat_do is null;
+            
+//vypis osoby s ktory maju aspon 3 rozne typy prispevkov:
+select meno, priezvisko, count(distinct id_typu)
+  from p_osoba join p_poberatel using (rod_cislo)
+  where dat_od < sysdate and
+        (dat_do is null or dat_do > sysdate)
+  group by meno, priezvisko, rod_cislo
+  having count(distinct id_typu) >= 3;
+
+//vypis mesta v ktorych sa nenachadzaju poberatelia prispevku v nezamestnanosti
+select distinct n_mesta
+  from p_mesto 
+  join p_osoba using (psc)
+  where rod_cislo not in (
+    select rod_cislo
+     from p_poberatel
+     where id_typu=3 and
+            dat_od<sysdate and
+            (dat_do > sysdate or dat_do is null)
+  );
+
+select m.n_mesta
+  from p_mesto m
+  where not exists (
+    select 'x'
+      from p_osoba o
+      join p_poberatel p using (rod_cislo)
+      where m.psc = o.psc and
+        p.id_typu = 3 and
+        p.dat_od < sysdate and
+        (p.dat_do > sysdate or p.dat_do is null)
+);
+
+//Napíš skrip, ktorý pridá do tabuľky prvok atribút počet, ktorý je typu integer
+//a môže nadobúdať hodnoty od 10 do 50
+alter table prvok
+    add pocet integer
+    constraint chk_pocet check (pocet between 10 and 50);
+    
+//Majme atribút znamka v tabuľke hodnotenie, ktorý nech má dátový typ char(1)
+//zabezpečte aby dosaoval hodnoty len A, B, C, D, E, F
+alter table hodnotenie
+  add constraint chk_znamka
+  check (znamka in ('A', 'B', 'C', 'D', 'E', 'F'));
+
+//Majme následujúce tabuľky:
+create table zamestnanec(id integer, rod_cislo VARCHAR2(10));
+create table auto(spz VARCHAR2(10), zamestnanec_id integer);
+//Definujte: primárne kľúče v oboch tabuľkách, vzťah medzi tabuľkami s kardinalitou 1:1
+//neidentifikačný vzťah, povinné členstvo na oboch stranách
+create table zamestnanec
+(id integer, 
+ rod_cislo VARCHAR2(10),
+ primary key (id)
+);
+
+create table auto
+(spz VARCHAR2(10), 
+ zamestnanec_id integer,
+ primary key (spz),
+ foreign key (zamestnanec_id) references zamestnanec (id)
+);
+
+//Zabezpečte ze suma v p príspevky nemôže byť záporná
+alter table p_prispevky
+  add constraint chk_suma
+  check (suma >= 0);
+
+-- 1. Výberové dotazy (SELECT)
+//Vypíš rodné čísla osôb, ktoré poberajú viac ako 3 rôzne typy príspevkov.
+
+
+//Vypíš mestá, v ktorých sa nenachádza žiaden poberateľ príspevku v nezamestnanosti.
+select distinct m.n_mesta
+  from p_mesto m
+  where not exists (
+    select 'x'
+      from p_osoba o
+      join p_poberatel p using (rod_cislo)
+      where m.psc=o.psc and
+            p.id_typu=3 and
+            p.dat_od<sysdate and
+            (p.dat_do>sysdate or p.dat_do is null)
+);
+
+//Ku každej osobe vypíš celkový počet dní, počas ktorých bola poistená.
+select rod_cislo, sum(nvl(dat_do, trunc(sysdate)) - dat_od) as pocet_dni
+    from p_poistenie
+    group by rod_cislo
+    order by pocet_dni;
+
+//Vypíš osoby, ktoré mali viac ako jedno aktívne poistenie súčasne.
+select meno, priezvisko, rod_cislo, count(*) as pocet_poisteni
+  from p_osoba join p_poistenie using (rod_cislo)
+  group by meno, priezvisko, rod_cislo
+  having count(*) > 1;
+
+select distinct o.meno, o.priezvisko, o.rod_cislo
+  from p_osoba o
+  join p_poistenie p1 on o.rod_cislo=p1.rod_cislo
+  join p_poistenie p2 on o.rod_cislo=p2.rod_cislo
+  where p1.id_poistenca < p2.id_poistenca and
+        p1.dat_od < nvl(p2.dat_do, trunc(sysdate)) and
+        p2.dat_od < nvl(p1.dat_do, trunc(sysdate));
+
+//Vypíš typy príspevkov a počet ich aktuálnych poberateľov (dat_do IS NULL).
+select id_typu, count(id_typu) as pocet_poberatelov
+  from p_poberatel
+  where dat_do is null or dat_do > sysdate
+  group by id_typu;
+
+-- 2. DML (INSERT, UPDATE, DELETE)
+//Vlož do p_osoba záznamy z nove_osoby, ktoré tam ešte nie sú.
+insert into p_osoba(rod_cislo, meno, priezvisko, psc, ulica)
+  select rod_cislo, meno, priezvisko, psc, ulica
+    from nove_osoby n
+    where not exists (
+        select 'x'
+          from p_osoba o
+          where o.rod_cislo=n.rod_cislo
+);
+
+//Nastav dat_do = SYSDATE pre všetky záznamy v p_poistenie, ktoré sú aktívne dlhšie ako 10 rokov.
+update p_poistenie
+  set dat_do=sysdate
+  where dat_do is null and
+  	months_between(sysdate, dat_od) > 120;
+
+//Vymaž z p_typ_prispevku všetky typy príspevkov, ktoré sa nikdy nepoužili v p_prispevok.
+delete from p_typ_prispevku
+  where not exists (
+    select 'x'
+      from p_prispevky
+      where p_typ_prispevku.id_typu=p_prispevky.id_typu
+  );
+
+rollback;
+
+//Vlož záznamy do p_prispevok len pre tých poistencov, ktorí majú aktuálne aktívne poistenie.
+--insert into p_prispevky
+  --select id_poberatela, sysdate, id_typu, sysdate, per_vyj*
+
+//Aktualizuj všetky záznamy v p_poberatel, kde percentualne_vyjadrenie < 10,
+//nastavením dat_do = SYSDATE.
+update p_poberatel
+  set dat_do=sysdate
+  where perc_vyj < 10;
+
+rollback;
+
+-- 3. DDL (ALTER TABLE, CREATE TABLE, CONSTRAINTS)
+//Pridaj do tabuľky p_osoba stĺpec slobodny typu CHAR(1), ktorý môže mať len hodnoty 'A' alebo 'N'.
+alter table p_osoba
+  add slobodny char(1)
+  constraint chk_slobodny
+  check (upper(slobodny) in ('A', 'N'));
+
+//Do tabuľky p_prispevok pridaj atribút suma typu NUMBER, ktorý nesmie byť záporný.
+alter table p_prispevok
+  add suma number
+  constraint chk_suma
+  check (suma >= 0);
+
+
+
+
+```
