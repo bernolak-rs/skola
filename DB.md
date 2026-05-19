@@ -1293,6 +1293,86 @@ select *
 
 
 Priprava na skusku
+
+1. Ako by ste zistili kardinalitu relacie pre tabulku P_ZAMESTNAVATEL.
+```sql
+select count(*)
+	from p_zamestnavatel;
+```
+2. Urcte determinanty: (X, Y)->Z; Z->X; Z->W
+Determinant
+(X, Y) -> Z a tranzitivne X a W
+Z -> X, W
+
+3. Pre kazde mesto vypiste pocet nezamestnanych osob, ktore v nom byvaju (ak su v meste vsetci zamestnani, vypiste 0).
+	```sql
+	select m.n_mesta, count(*)
+		from p_mesto m
+		left join p_osoba o on m.psc=o.psc
+		left join p_zamestnanec z o.rod_cislo=z.rod_cislo
+		where z.dat_od < sysdate and
+			(z.dat_do > sysdate or z.dat_do is null)
+		group by m.n_mesto;
+	```
+4. Vymazte typy prispevkov, ktore nikto nikdy nepoberal. Pozor na referencnu integritu.
+```sql
+delete from p_historia
+	where id_typu not in (
+		select id_typu
+			from p_poberatel;
+	);
+delete from p_typ_prispevku
+	where id_typu not in (
+		select id_typu
+			from p_poberatel;
+	);
+```
+5. Urcte determinanty: D->C; (A, B) -> D; C->D
+Determint->Funkcne Zavisle
+D->C
+(A, B) -> D, tranzitivne C
+C->D
+C<->D vzajomne zavisle
+6. Definujte primarny kluc pre tabulku P_ZAMESTNANEC:
+```sql
+alter table p_zamestnanec
+	add constraint pk_p_zamestnanec primary key(rod_cislo, dat_do)
+```
+7. Definujte cudzi kluc:
+	- Mnozina atributov, ktora je definovana v inej ralacii ako kandidat primarneho kluca
+8. Vlozte do tabulky osoba z tabulky nove_osoby (rovnaka struktura). vlozte len tie, ktore tam este nie su.
+```sql
+insert into osoba (rod_cislo, meno, priezvisko, ulica, psc, obec)
+	select rod_cislo, meno, priezvisko, ulica, psc, obec
+		from nove_osoby no
+		where not exists (
+			select 'x' from osoba o
+				where no.rod_cislo=o.rod_cislo 
+		);
+```
+9. Definujte, o aky typ funkcnej zavislosti ide:
+	- A<->A - Trivialna zavislost
+
+10. Napiste trigger, ktorym zabezpecite, ze novy poistny zaznam (p_poistenie) sa neda vytvorit, ak osoba ma aktualne aktivne poistenie.
+	```sql
+	create or replace trigger nove_poistenie
+	before insert on p_poistenie
+	for each row
+	declare
+		v_pocet integer
+	begin
+		select into v_pocet
+			from p_poistenie
+			where rod_cislo = :new.rod_cislo
+				and (dat_do is null or dat_do > trunc(sysdate))
+				and dat_od < trunc(sysdate);
+		if v_pocet > 0 then
+		  raise_application_error(-20000, 'Uz existuje aktivne poistenie pre osobu');
+		end if;			
+	end;
+	/
+	```
+
 ## I. ZÁKLADNÉ POJMY A VZŤAHY
 1. Vysvetli rozdiel medzi doménou a atribútom.
 	- Doména - mnozina hodnot, ktore splnaju typ alebo velkost pre dany atribut
@@ -1409,4 +1489,16 @@ Priprava na skusku
 38. Aký je rozdiel medzi COMMIT a ROLLBACK? Ako ovplyvnia vložené údaje?
 	- Commit - zapise vsetky transakcie do perzistentnej pamate
 	- Rollback - vrati nas na miesto posledneho commitu
-39. 
+
+
+Koniec
+
+
+ 1.  Majme atribút od v tabuľke zahradnictvo_evidencia, ktorý nech má dátový typ date. Zabezpečte, aby hodnota mesiaca nebola 11, 12, 1 alebo 2
+	```sql
+	alter table zahradnictvo_evidencia
+		add constraint chk_od
+		check (extract(month from od) not in (11, 12, 1, 2))
+	```
+
+Koniec
