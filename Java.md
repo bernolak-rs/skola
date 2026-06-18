@@ -116,6 +116,7 @@ reset the tail field to null when deleting the last node of a list (see lines 51
 of Code Fragment 3.15). What are the consequences if we were to remove those
 two lines from the code? Explain why the class would or would not work with
 such a modification.
+- since list is empty, it needs tail to 
 
 R-3.6 Give an algorithm for finding the second-to-last node in a singly linked list in
 which the last node is indicated by a null next reference.
@@ -154,3 +155,9 @@ two lists are equal if they have the same sequence of elements, with correspond-
 ing elements currently at the front of the list.
 
 R-3.16 Implement the equals( ) method for the DoublyLinkedList class.
+
+
+## 4. Algorithm Analysis
+Big O - worst case
+Theta - average
+Omega - best case
