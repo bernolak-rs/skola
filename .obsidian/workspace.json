@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "7c0221df0037e23e",
+        "id": "936c01af76f2f6eb",
         "type": "tabs",
         "children": [
           {
-            "id": "07a5b32f426e0380",
+            "id": "092d89ef38df76aa",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -22,77 +22,35 @@
             }
           },
           {
-            "id": "f5f4894900f7dfc4",
+            "id": "36b86059f09e5d93",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Java.md",
+                "file": "PDS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Java"
+              "title": "PDS"
             }
           },
           {
-            "id": "73662ffb31fafb6c",
+            "id": "60a69aaba4727736",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Java.md",
+                "file": "Komunikačné technológie.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Java"
-            }
-          },
-          {
-            "id": "4881caff2ca1bedd",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Learncpp.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Learncpp"
-            }
-          },
-          {
-            "id": "1ea7cf67dbc7afee",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Learncpp.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Learncpp"
-            }
-          },
-          {
-            "id": "c7a897d7bc1ca291",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DB.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "DB"
+              "title": "Komunikačné technológie"
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -112,7 +70,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -254,15 +214,18 @@
       "bases:Create new base": false
     }
   },
-  "active": "c7a897d7bc1ca291",
+  "active": "36b86059f09e5d93",
   "lastOpenFiles": [
-    "OpenGluco Server Microservice Refactor Summary.md",
+    "DB.md",
+    "PDS.md",
+    "Komunikačné technológie.md",
+    "AUS2.md",
     "Learncpp.md",
-    "Learn Git.md",
     "Java.md",
+    "OpenGluco Server Microservice Refactor Summary.md",
+    "Learn Git.md",
     "BAkalarka.md",
     "Boot dev progress.md",
-    "DB.md",
     "Anj.md",
     "PAS.md",
     "Prax.md",

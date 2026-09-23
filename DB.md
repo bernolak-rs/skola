@@ -12,7 +12,7 @@ Databázový systém tvoria:
 
 DML (Data Manipulation Language) - Select, Update, Delete, Insert  
 DDL (Data Definition Language) - Create, Alter, Drop - automaticky robi commit  (aj pri triggri)
-DCL (Data Control Language) - Grant, Revoke
+DCL (Data Control Language) - Grant, Revoke - automaticky robi commit
 TCL (Transaction Control Language) - Commit, Rollback
 
 SQL je neproceduralny jazyk - Zjednodušene povedané, v **neprocedurálnom jazyku** nehovoríte počítaču, **AKO** má niečo urobiť (krok po kroku), ale hovoríte mu, **ČO** má byť výsledkom.
@@ -1063,6 +1063,7 @@ END LOOP
 CLOSE - v oracle sa dealokuje
 
 Typy kurzorov
+- select into
 - sekvencny kurzor
 - posuvny kurzor
 - kurzor pre zmeny
@@ -1079,10 +1080,10 @@ Rollback sa vracia ku poslednemu commitu (resp. na zaciatok)
 
 **Transakcia** - ako transakcia sa chape, postupnost operacii read a write, vratane vypoctovych krokov. Niekedy sa sem radi aj dotaz. Na ulozenie zmien po transakcii sa pouzivaju TCL prikazy(Commit, Rollback). 
 ### ACID - Vlastnosti Transakcie
-- atomicity - atomickost - Ak jedna časť transakcie zlyhá (napr. pri prevode peňazí sa peniaze odčítajú, ale nepripíšu), celá transakcia sa zruší (**ROLLBACK**) a databáza sa vráti do pôvodného stavu.
+- atomicity ? - atomickost - Ak jedna časť transakcie zlyhá (napr. pri prevode peňazí sa peniaze odčítajú, ale nepripíšu), celá transakcia sa zruší (**ROLLBACK**) a databáza sa vráti do pôvodného stavu.
 - consistency -  CRUDE,  Transakcia musí previesť databázu z jedného platného stavu do druhého platného stavu
 - isolation - Transakcie bežia nezávisle od seba. Výsledok jednej transakcie nesmie byť viditeľný pre ostatné transakcie, kým nie je potvrdený (**COMMIT**)
-- durability - trvanlivost, Akonáhle dostaneš potvrdenie o commite, zmeny sú zapísané v trvalom úložisku
+- durability - trvanlivost, Akonáhle dostaneš potvrdenie o commite, zmeny sú zapísané v trvalom úložisku, do logu
 
 ## Relacna Integrita
 Zakladom je mnozina integritnych obmedzeni, ktore reprezentuju tvrdenia o datach, ktore musia v databaza platit
