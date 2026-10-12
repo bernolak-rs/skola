@@ -1053,7 +1053,7 @@ next_date funkcia, ktora funguje ako next_day, ale aj v amerike aj u nas
 select DATE '12-4-2024' from dual;
 
 ## Kurzory
-- objekt v jazyku SQL a spristupnuje zaznamy z prikazu select
+- objekt v jazyku SQL a postupne spristupnuje zaznamy z prikazu select
 DECLARE
 OPEN
 LOOP
@@ -1063,7 +1063,6 @@ END LOOP
 CLOSE - v oracle sa dealokuje
 
 Typy kurzorov
-- select into
 - sekvencny kurzor
 - posuvny kurzor
 - kurzor pre zmeny

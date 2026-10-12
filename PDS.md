@@ -1,4 +1,5 @@
 
+# Prednaska 1
 ### Datove typy
 - interval
 
@@ -153,3 +154,217 @@ row_number() over
 rank() over
 denserank() over
 partition by
+
+# Prednaska 2
+# ADBS -- Objekty a kolekcie (skrátené poznámky)
+## 1. Objektový typ
+
+Objektový typ má **špecifikáciu** (atribúty + deklarácie metód) a **TYPE
+BODY** (implementáciu).
+
+``` sql
+CREATE TYPE t_osoba AS OBJECT (
+id INTEGER,
+meno VARCHAR2(30),
+MEMBER FUNCTION vypis RETURN VARCHAR2
+);
+/
+```
+
+- `MEMBER` -- metóda objektu, pozná `SELF`.
+- `STATIC` -- metóda typu, `SELF` nemá.
+- `SELF` -- aktuálna inštancia objektu.
+
+## 2. Konštruktory
+**Implicitný konštruktor** vytvorí Oracle automaticky; parametre
+zodpovedajú atribútom.
+
+``` sql
+t_osoba(1, 'Adam')
+```
+Explicitný:
+``` sql
+CONSTRUCTOR FUNCTION t_osoba(...) RETURN SELF AS RESULT
+```
+## 3. Dedičnosť
+
+``` sql
+CREATE TYPE t_student UNDER t_osoba (
+rocnik INTEGER
+);
+/
+```
+  
+- `UNDER` -- dedenie
+- `NOT FINAL` -- z typu možno dediť
+- `NOT INSTANTIABLE` -- abstraktný typ/metóda
+- `OVERRIDING` -- prepísanie zdedenej metódy
+  
+## 4. Objektová tabuľka
+
+``` sql
+CREATE TABLE osoby_tab OF t_osoba (
+PRIMARY KEY(id)
+);
+```
+
+  
+`VALUE(alias)` vráti celý objekt:
+  
+``` sql
+SELECT VALUE(o) FROM osoby_tab o;
+SELECT VALUE(o).meno FROM osoby_tab o;
+SELECT VALUE(o).vypis() FROM osoby_tab o;
+```
+
+
+## 5. TREAT a IS OF
+  
+`TREAT` slúži na pretypovanie:
+  
+``` sql
+TREAT(VALUE(a) AS t_osobne)
+```
+  
+Kontrola typu:
+  
+``` sql
+obj IS OF (t_auto) -- typ alebo jeho potomok
+obj IS OF (ONLY t_auto) -- presne t_auto
+```
+
+
+## 6. REF a DEREF
+  
+- `REF(objekt)` → referencia na objekt
+- `DEREF(referencia)` → objekt
+  
+``` text
+objekt --REF--> referencia
+referencia --DEREF--> objekt
+```
+  
+## 7. MAP a ORDER
+  
+Slúžia na porovnávanie/triedenie objektov. Objektový typ môže mať
+maximálne **jednu** triediacu metódu (`MAP` alebo `ORDER`).
+  
+Pri `ORDER`:
+  
+``` text
+< 0 SELF je menší
+= 0 rovnaké
+> 0 SELF je väčší
+```
+  
+# 8. Kolekcie
+  
+Typ Veľkosť SQL Riedka
+-------------- -------------- ----- --------
+Index-by neohraničená nie áno
+Nested table neohraničená áno áno
+VARRAY ohraničená áno nie
+### Index-by
+
+Iba PL/SQL:
+``` sql
+TYPE t_cisla IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;
+```
+  
+### Nested table
+
+``` sql
+CREATE TYPE t_cisla AS TABLE OF INTEGER;
+/
+```
+Neohraničená, použiteľná v DB, po mazaní môže byť riedka.
+### VARRAY
+``` sql
+CREATE TYPE t_cisla AS VARRAY(10) OF INTEGER;
+/
+```
+Má pevné maximum, je hustá a zachováva poradie.
+## 9. Metódy kolekcií
+``` text
+COUNT počet prvkov
+LIMIT maximálny počet
+FIRST/LAST prvý/posledný index
+NEXT/PRIOR ďalší/predchádzajúci index
+EXISTS(i) či index existuje
+EXTEND rozšírenie
+TRIM odstránenie z konca
+DELETE vymazanie
+```
+
+Pre riedku kolekciu:
+``` sql
+i := c.FIRST;
+WHILE i IS NOT NULL LOOP
+DBMS_OUTPUT.PUT_LINE(c(i));
+i := c.NEXT(i);
+END LOOP;
+```
+## 10. BULK COLLECT
+Načíta viac SQL riadkov naraz do kolekcie:
+``` sql
+SELECT *
+	BULK COLLECT INTO studenti
+	FROM student;
+```
+
+# Keywords ťahák
+
+``` text
+MEMBER metóda objektu, SELF
+STATIC metóda typu, bez SELF
+NOT FINAL možno dediť
+NOT INSTANTIABLE abstraktný
+UNDER dedenie
+OVERRIDING prepísanie metódy
+
+VALUE celý objekt
+TREAT pretypovanie
+IS OF kontrola typu
+ONLY presný typ
+REF objekt -> referencia
+DEREF referencia -> objekt
+
+Index-by PL/SQL, neohraničená, riedka
+Nested table SQL + PL/SQL, neohraničená
+VARRAY SQL + PL/SQL, ohraničená, hustá
+```
+# Prednaska 3
+element
+```xml
+<meno>Adam</meno> 
+```
+atribut
+```xml
+<meno krstne="Adam"></meno> 
+```
+
+XML je case sensitive
+EXISTSNODE vrati 1 ak existuje a 0 ak nie
+EXTRACT vrati XML elementy aj s tagmi
+XMLROOT formatovanie
+EXTRACTVALUE vrati XML hodnoty bez tagov
+LIKE 
+TRIM
+
+```sql
+-- Získanie atribútu cez „@“
+
+select value(s)
+	from studenti_xml s
+	where EXTRACTVALUE(value(s),'/student/@oc')=500423;
+```
+
+EXTRACTVALUE by malo vratit vzdy jeden vysledok, musime viacere zaobalit do root elementu
+
+UPDATEXML
+
+SYS_XMLGen()
+XMLElement()
+XMLAttributes
+XMLForest
+XMLAgg - agreguje elementy do pola (s group by)
