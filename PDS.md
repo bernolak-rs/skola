@@ -1,4 +1,3 @@
-
 # Prednaska 1
 ### Datove typy
 - interval
@@ -368,3 +367,126 @@ XMLElement()
 XMLAttributes
 XMLForest
 XMLAgg - agreguje elementy do pola (s group by)
+
+# Prednaska 4
+## JSON
+- JS object notation
+- Key-Value pair
+- jednoduchsi ako XML
+- lahko citatelny pre ludi
+- pouzivany na posielanie dat medzi serverom a klientom
+- narozdiel od RDBs sa indexuje pole od 0
+## JSON v Oracle
+```sql
+Create table books_json(id integer, doc CLOB,
+	constraint valid_json_cons CHECK (doc is json));
+
+select b.doc.Title
+from books_json b;
+
+-- it is a string format -> case sensitive!
+-- we need to use b alias otherwise doesn't work
+```
+
+**JSON_EXISTS** - umozni nam pouzit hodnotu JSONu ako podmienku
+```sql
+select b.doc.Title
+	from books_json b
+	where json_exists(b.doc, '$.Detail.Status');
+	
+select b.doc.Title
+	from books_json b
+	where json_exists(b.doc, '$.Detail?(@.Status=="sold-out")');
+```
+
+Definened parameter
+- pri selecte sa vytvori plan vykonania, ktory sa ulozi do operacnej pamate a pri pouziti takehoto parametru nemusime vkuse vytvarat novy plan vykonania ale odkazovat sa na povodny hash ID
+```sql
+select b.doc.Title
+	from books_json b
+	where json_exists(b.doc, '$.Detail?(@.Publication_year==$PY)‘
+					passing 2020 as "PY");
+```
+
+**JSON_VALUE**
+- vracia skalarnu hodnotu - pokial nie je skalar vrati null
+```sql
+select b.doc
+	from books_json b
+	where json_value(b.doc, '$.Detail.In_stock' returning number)=0;
+```
+
+JSON_TABLE
+- nacita data z jsonu do tabulky
+- lateralny join
+- vracia skalar - inak null (skalar nemoze byt pole, json, objekt)
+- nested - sluzi aby sme z pola vytvorili relacnu hodnotu
+
+## Generovanie JSON z RLDBs
+**JSON_OBJECT**
+- vytvori JSON objekt
+```sql
+select json_object('name' value meno || ' ' || priezvisko,
+	'student_id' value os_cislo
+	ABSENT ON NULL)
+-- absent on null nam vynecha null atribut namiesto toho aby ho nastavil na null ako left join
+
+select json_object(*) -- nemusime select json_object(meno, priezvisko)
+from os_udaje
+left join student using(rod_cislo);
+```
+
+**JSON_ARRAY**
+- vytvori pole elementov rovnakeho typu
+```sql
+json_array(min(vysledok), max(vysledok))
+```
+vrati ["C", "E"]
+**JSON_OBJECTAGG**
+- vrati JSON
+- agreguje nam objekty
+**JSON_ARRAYAGG**
+- vrati JSON hodnoty
+- Agregacna!!
+
+## Index
+```sql
+create index ind_json
+	on books_json(JSON_value(doc, '$.Title'));
+
+Select b.doc
+	from books_json b
+	where JSON_value(doc, '$.Title')= 'Databázové systémy';
+```
+- znizi naklady na prehliadku
+
+## Update
+```sql
+update books_json b
+  set b.doc=json_mergepatch(b.doc,
+  '{"Detail":
+	  {
+	  "Publisher": "Oracle Press",
+	  "Publication_year": 2021,
+	  "ISBN": "xxx",
+	  "Language": "English",
+	  "Pages": 520,
+	  "Price": 50
+	  }
+}')
+where b.doc.Title='APEX';
+```
+
+JSON_SERIALIZE
+```sql
+select json_serialize(b.doc pretty)
+	from books_json b
+	where b.doc.Title='APEX';
+```
+# Kolekcie
+- su zoradene
+VARRAY
+Index By Table
+Nested Table
+
+**na teste vsetko co sme robili na cviceniach po 5 tyzden (aj xml a json, kolekcie nebudu, iba ako sucast xml a json alebo teoria)**
