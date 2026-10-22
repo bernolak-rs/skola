@@ -144,3 +144,71 @@ Mozem vyhadzovat vynimky? - Samozrejme
 - treba otestovat AVL
 - find - porovname interval zo stromu a z arraylistu, dolezite porovnavat data a nie len pocet
 - robime rovnake operacie aj na quadstrome aj na k-d strome
+
+# Prednaska 5
+### 2-4 strom
+- 2-3-4 strom
+
+### RB strom
+- modifikacia 2-4 stromu na binarny tvar
+- boolean hodnota ci red alebo blue (nar. isRed)
+- koren je cierny, cerveny ma vylucne ciernych synov
+
+### AA strom
+- modifikacia 2-3 stromu na binarny tvar
+- ma level ktory zabezpecuje vlastnosti stromu - level je opak hlbky, listy su 1 a najvyssi level je koren
+
+### Tango strom
+- ak mame vopred data a potrebujeme vediet pocetnost pristupu k datam
+- vyuziva system preferovanych ciest - vytvorime kostru a pridame im stromy podla pocetnosti pristupu
+- ma zlozitost O(log(log(n)))
+
+### Znakovy strom (casto na skuske)
+- vyska zavisi od najdlhsieho slova
+- 
+
+### Skip - zoznam
+- vhodne ked mame data v linked liste, tak mozme na tom postavat skip - zoznam
+- trivialna implementiacia
+- vyhladavanie amortizovana O(log(n))
+
+## Prioritny front
+- priorita nie je unikatna
+- priorita by sa mala dat menit
+### Fibonacciho halda
+- implementacia prioritneho frontu
+- implementovana obojstrannym zretazenym zoznamom
+- pri inserte rastie do sirky a pri delete sa stlaci do vysky
+
+
+
+
+
+**test bude po fibonacciho haldu**
+
+
+
+# Cvicenie 5
+**test bude po fibonacciho haldu**
+
+checkpoint 2 - dokumentacia
+
+checkpoint 1 - oprava:
+- potencionalne doku k AI - skopirovat konverzaciu s chatom
+- treba povolit duplicity v oboch stromoch
+
+# Semka 1 - Checkpoint 2
+Quad trees:
+https://github.com/mimicat13/java-simple-quadtree : algs4.jar
+https://github.com/DanySK/java-quadtree : java-quadtree-1.0.2.jar + kotlin-stdlib-2.2.0.jar
+[https://github.com/locationtech/jts](https://github.com/locationtech/jts/tree/master/modules/core/src/main/java/org/locationtech/jts/index/quadtree) : jts-core.jar
+modules/core/src/main/java/org/locationtech/jts/index/quadtree
+
+K-D trees:
+https://github.com/mgruben/Kd-Trees
+https://github.com/plamenabrezova/kdtree
+https://github.com/morkev/kd-trees
+
+Dependencies:
+algs4.jar
+jts-core.jar

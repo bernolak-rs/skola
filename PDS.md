@@ -66,6 +66,8 @@ end;
 -- select into
 -- kurzor - sekvencny
 
+-- implicitny kurzor je cyklus for
+
 set serveroutput on; 
 
 declare 
@@ -489,4 +491,43 @@ VARRAY
 Index By Table
 Nested Table
 
-**na teste vsetko co sme robili na cviceniach po 5 tyzden (aj xml a json, kolekcie nebudu, iba ako sucast xml a json alebo teoria)**
+**na teste vsetko co sme robili na cviceniach po 5 tyzden (aj xml a json, kolekcie nebudu, iba ako sucast xml a json alebo teoria), smernik tam su**
+```sql
+isdangling
+```
+**prakticky nebudu kolekcie, generovanie prikazov,**
+
+# Prednaska 5
+CLOB - textovy subor 
+NCLOB - textovy subor s netypickymi znakmi
+BLOB - obrazky
+BFILE - subor ulozeny mimo databazy a v db je len smernik
+
+INTERNE 
+- viem vykonavat zmeny pomocou transakcii
+- BLOB, CLOB, NCLOB - su medzi sebou priamo konvertovatelne
+- varchar2 max 4 KB rozsireny rezim je 32 KB
+
+EXTERNE
+- velky subor typicky
+- nevieme modifikovat data pomocou transakcii - readonly
+- BFILE value je null
+
+Directory
+- sluzi na pristup k suboru mimo DBS
+- vlastnikom je admin dbs ale ked ho vytvorime dostavame prava Read a Write
+
+FOR UPDATE - da nam zamok na data ktore modifikujeme
+- po update volame commit; aby sme odstranili zamok
+
+Ked pouzijeme delete vymazeme fotku a smernik (zaznam v tabulke), ale ak mame odkaz v inej tablulke ostane nam dangling pointer, mozme pouzit EMPTY_BLOB(), ktory zrusi smernik, ak vymazem vsetky smerniky, tak vymaze objekt
+
+LOBy nevieme porovnat efektivne, lebo musime prejst cele subory
+
+Securefiles
+- encrypcia
+- deduplikacia
+- kompresia
+
+Sifrovacie kluce vzdy mimo databazy - do struktury waller
+- ak by sme stratili pristup do databaze a potrebujeme ju obnovit
