@@ -1,3 +1,55 @@
+seed=42, seeds=1, size=10100, rectangles=1000, check=100000, range=1000000, depth=20, tree=both, data=off
+> size 10000
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=both, data=off
+> rectangles 1000
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=both, data=off
+> tree kd
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=kd, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=kd, data=off
+KDTree OK: seed= 42, size= 10000
+> tree quad
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=quad, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=quad, data=off
+QuadTree OK: seed= 42, size= 10000
+> tree quadkd
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=quadkd, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=quadkd, data=off
+QuadKDTree OK: seed= 42, size= 10000
+> tree mimicat13
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=mimicat13, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=mimicat13, data=off
+Mimicat13 QuadTree OK: seed= 42, size= 10000
+> tree danysk
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=danysk, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=danysk, data=off
+DanySK QuadTree OK: seed= 42, size= 10000
+> tree jts
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=jts, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=jts, data=off
+JTS QuadTree OK: seed= 42, size= 10000
+> tree plamenabrezova
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=plamenabrezova, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=plamenabrezova, data=off
+Plamenabrezova KDTree OK: seed= 42, size= 10000
+> tree mgruben
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=mgruben, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=mgruben, data=off
+Mgruben KDTree OK: seed= 42, size= 10000
+> tree morkev
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=morkev, data=off
+> run
+seed=42, seeds=1, size=10000, rectangles=1000, check=100000, range=1000000, depth=20, tree=morkev, data=off
+Morkev KDTree OK: seed= 42, size= 10000
+
+
 Yes. **The biggest avoidable time cost is in KDTree’s bulk construction.** I haven’t changed any project files.
 
 1. **Indexed access remains in `buildBalanced()`** — [KDTree.java (line 93)](/Users/adambernolak/Code/skola/1-sem/aus2/semka1/src/KDTree/KDTree.java:93)

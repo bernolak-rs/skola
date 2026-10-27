@@ -163,9 +163,9 @@ Mozem vyhadzovat vynimky? - Samozrejme
 - vyuziva system preferovanych ciest - vytvorime kostru a pridame im stromy podla pocetnosti pristupu
 - ma zlozitost O(log(log(n)))
 
-### Znakovy strom (casto na skuske)
+### Znakovy strom - Trie (casto na skuske)
 - vyska zavisi od najdlhsieho slova
-- 
+- pouzivany na vyhladavanie pomocou klucovych slov
 
 ### Skip - zoznam
 - vhodne ked mame data v linked liste, tak mozme na tom postavat skip - zoznam
@@ -175,18 +175,17 @@ Mozem vyhadzovat vynimky? - Samozrejme
 ## Prioritny front
 - priorita nie je unikatna
 - priorita by sa mala dat menit
+- mozme implementovat RB alebo AVL stromom
 ### Fibonacciho halda
 - implementacia prioritneho frontu
-- implementovana obojstrannym zretazenym zoznamom
+- implementovana **obojstrannym zretazenym zoznamom**
 - pri inserte rastie do sirky a pri delete sa stlaci do vysky
-
-
-
-
+- insert chceme robit s O(1)
+- mozme implementovat pomocou viaccestneho stromu na jednotlivych uzloch retazca
+- ked stale vkladame tak degeneruje do sirky -> zretazeneho zoznamu
+- znacime si do dynamickeho pola referencia podla stupna(pocet priamych synov)
 
 **test bude po fibonacciho haldu**
-
-
 
 # Cvicenie 5
 **test bude po fibonacciho haldu**
@@ -212,3 +211,28 @@ https://github.com/morkev/kd-trees
 Dependencies:
 algs4.jar
 jts-core.jar
+
+# Prednaska 6
+## Parovacia halda
+- vsetko sa da implementovat operaciou **paruj**
+- paruj priradi korenu s vyssou prioritou koren s nizsou prioritou ako syna
+
+## Struktury v persistentnej pamati
+- data su v suboroch a my s nimi vieme efektivne a rychlo pracovat
+- pracujeme na operacnej pamati a nacitame si iba to co treba
+- budeme citat a zapisovat pole bajtov
+- bottleneck je kolkokrat citame alebo zapiseme na disk (chceme ho minimalizovat)
+- kvoli harddisku vzdy implementujeme, tak ze pracujeme s blokom pamati, aby to bolo efektivne na HD
+
+# Cvicenie 6
+- pisali sme test 1 a semka 1 kontrola rozpracovania
+
+## Cast 3
+MVP - model, view, presenter design pattern
+model - jadro aplikacie, ktore pracuje s datami
+view - pohlad - okno, formular
+presenter - logicky spojovnik medzi view a modelom
+
+MVC - model, view, controller
+
+Na view nesmieme posielat Listy vysledkov, posleme vysledky v stringoch. O to sa postara controller alebo presenter (VYSSIE NIKDY).

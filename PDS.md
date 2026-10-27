@@ -531,3 +531,54 @@ Securefiles
 
 Sifrovacie kluce vzdy mimo databazy - do struktury waller
 - ak by sme stratili pristup do databaze a potrebujeme ju obnovit
+
+
+# Prednaska 6
+Table Access Full
+Dirty block pamate vznika, ked modifikujeme udaj v pamati a necommitneme
+
+Typy zamkov -riadkovy:
+- exkluzivny - modifikacia
+- zdielany - select - v oracle neexistuje(to nam dovoli sa pozriet na zaznam ktory niekto modifikuje)
+
+Commit:
+1. find
+2. load
+3. lock
+4. update
+5. commit
+6. unlock
+
+UNDO - v databaze, kym je aktivna transakcia(moze byt aj dlhsie -> pouziva sa na AS OF query)
+REDO - v pamati, kym necommitnem. pouziva sa na commit zmien
+
+flashback (DDL) obnovi tabulku po commite -> pokazi to indexy a treba ich prebudovat.
+```sql
+flashback table os_udaje to timestamp(sysdate - 1);
+
+alter index xxx rebuild;
+```
+
+nad primarnym klucom je vzdy index - je to strom(key, value) - B+ strom, jeho listy su spojone obojstrannym zretazenym listom a ma v nich data -> dobre sa zoraduje/prechadza
+
+```sql
+select meno, priezvisko
+  from os_udaje
+  where rod_cislo='123456/7890'
+  where meno='Peter'
+  where substr(meno, 1, 1)='P'
+```
+
+RC - identifikujeme podla PK 
+ROWID - nepouzivame na indexovanie zaznamov, lebo pri exporte stratime cudzie kluce
+
+RC, ROWID - pri where rod_cislo="123456/7890"
+MENO, ROWID - pri where meno='Peter'
+substr..., PRIEZVISKO, MENO - pri where substr(meno, 1, 1)='P'
+
+vzdy chceme pouzit where z najmensim indexom, odstrani najvacsie mnozstvo nechcenych dat na zaciatku
+
+hlbka b+ stromu s 2 milionmi je priblizne 5-6
+null hodnoty nie su indexovane
+chceme co najviac unikatnych hodnot
+
