@@ -549,8 +549,8 @@ Commit:
 5. commit
 6. unlock
 
-UNDO - v databaze, kym je aktivna transakcia(moze byt aj dlhsie -> pouziva sa na AS OF query)
-REDO - v pamati, kym necommitnem. pouziva sa na commit zmien
+UNDO - v databaze, kym je aktivna transakcia(moze byt aj dlhsie -> pouziva sa na AS OF query), rollback
+REDO - v pamati, kym necommitnem. pouziva sa na commit zmien, pokial nastavime no logging, tak sa nam nastavia indexy na unusable a musime ich rebuildnut, inak nam klesne vykon
 
 flashback (DDL) obnovi tabulku po commite -> pokazi to indexy a treba ich prebudovat.
 ```sql
@@ -581,4 +581,79 @@ vzdy chceme pouzit where z najmensim indexom, odstrani najvacsie mnozstvo nechce
 hlbka b+ stromu s 2 milionmi je priblizne 5-6
 null hodnoty nie su indexovane
 chceme co najviac unikatnych hodnot
+
+# Prednaska 7
+Index
+
+Reverzny index (123 -> 321) pomaha s vyvazovanim stromu, lebo ked vkladame sekvenciu tak by sa vsetko davalo za sebou ale ked otocime sa to rozhadze
+
+ID in (123, 124, 125, 126) je rychlejsi alebo rovnaky ako (vykonava to paralelne)
+ID between 123 and 126
+ID >= 123 and ID <= 126
+
+descending order pri viacerych atributoch v order by
+
+plan vykonania sa cita od dola nahor
+
+nas vlastny index nemusi byt pouzity aj ked vyzera, ze sa hodi na dotaz. napr ked ked vyhladavame rc, meno, priezvisko a mame taky index ale aj tak sa pouzije databazovy unique index, lebo je rychlejsi
+
+Index range scan
+Index unique scan
+Flow index scan
+Table access by index rowid
+
+rozdiel medzi scan podla unique a vlastneho(m, p) je pri 15-20%
+
+implicitne sa vytvaraju kluce pre vsetkych kandidatov PK v tabulke
+
+constraint_type
+- U - unique
+- C - check constraint on table
+- P - primary key
+
+DBMS_METADATA package
+
+invisible - nepouziva sa v selectoch, iba v insert, update, delete
+unusable - nepouziva sa vobec
+virtualny index - ma len hlavicku, nie je realne vytvoreny, ale pouziva sa na rozhodnutie, ci ho bude oprimalizator pouzivat
+
+BitMap index
+- malo roznych hodnot ale vela zaznamov
+
+Index organized data
+- Key (PK) + data
+- data mozu mat overflow segment
+Hash index
+- podobne hash mape
+- moc sa nepouziva, backwards compatibilita
+- problem najst a menit hashovaciu funkciu, aby sa nam nepreplnil nejaky bucket
+
+Table access full
+index unique scan
+index range scan
+index full scan
+Index fast full scan
+iss
+
+b+tree index nevie manazovat null values
+
+nested loop - pouzijeme ked je tabulka mala
+inak hash match alebo merge join(hlada match)
+
+analiticke funckie:
+- row_number
+- rank
+- dense_rank
+
+agregacne funckie:
+- count
+- sum
+- min
+- max
+- avg
+- xml
+- json
+- listagg
+
+
 

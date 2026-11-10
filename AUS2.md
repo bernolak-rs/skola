@@ -213,6 +213,7 @@ algs4.jar
 jts-core.jar
 
 # Prednaska 6
+- budeme balit a zapisovat v blokoch, aby sme nacitavali a predstavovali jeden cluster na harddisku (na SSD to je jedno)
 ## Parovacia halda
 - vsetko sa da implementovat operaciou **paruj**
 - paruj priradi korenu s vyssou prioritou koren s nizsou prioritou ako syna
@@ -236,3 +237,69 @@ presenter - logicky spojovnik medzi view a modelom
 MVC - model, view, controller
 
 Na view nesmieme posielat Listy vysledkov, posleme vysledky v stringoch. O to sa postara controller alebo presenter (VYSSIE NIKDY).
+
+# Prednaska 8
+## Heap file
+- implicitna neutriedena tabulka na disku -> neefektivne vyhladavanie
+- seek() -> nastav sa na miesto v pamati
+- budem appendneme alebo ak sa nenaseekujeme na koniec tak prepiseme stare data
+- do binarneho suboru mozeme zapisovat pomocou kniznice
+- mazanie v strede nie je zvycajne podporovane -> nastavime cast pamate na neplatnu
+- bitset pre platnost a 0 pre neplatny a 1 pre platny
+- SEMKA -> drzime si pocet platnych zaznamov a neplatne zoradime na koniec
+- mozme si aj pamatat pre jednotlivy ci je platny neplatny
+
+## Hashovanie
+- priame hashovanie - kluc je hash
+### HashTable
+Riesenie kolizii:
+- implementovana pomocou otvoreneho adresovania - probingu - zle
+- implementovane pomocou retazenia
+	- overflow oblast - buckety
+	- pomocna struktura na indexe (linkedlist alebo strom)
+### HashFile
+- staticke hashovanie
+- neutriedeny subor pomocou transformacie kluca
+- pocet lievikov (velkost clustra - metadata) / velkost bloku pamate
+**preplnujuce bloky** 
+- pamatame si bud index alebo adresu a pomocou nich sa zretazujeme na blok neskor v pamati, toto mozme opakovat kolko chceme, efektivita klesa
+- porovnavame kluce pomocou equals
+- duplicity nie su povolene
+- neplatna adresa/ na prazdny blok = -1
+- ked vymazeme vsetky zaznamy z bloku, tak mozme drzat v operacnej pamati volne bloky
+- na konci mozme skratit, skontrolujeme aj predosli blok ci nie je prazdny, nesmieme zabudnut na prestavnie referencii na tieto bloky
+- preplnujuce bloky su v osobitnom subore
+## Dynamicke hashovanie
+- binarny znakovy strom - trie - ten je v operacnej pamati
+- aj manazovanie volnych blokov je v operacnej pamati
+- na liste stromu je index, ktorym sa mozme naseedovat do suboru na chcene miesto a zistime, ci sa tam dany zaznam nachadza
+- prazdne bloky nebudu existovat ozkaz v extronom uzle bude -1
+### Implementacia dynamickeho hashovania
+Trieda DynHash:
+- DynHash(velkost clustra na disku, ) - v konstruktore otvarame zapisovanie a vytvorime nejaky destruktor na zavretie writeru/readeru
+- root na vrchol trie (trie implementovany len cez 2 triedy internal a external node)
+- blockCount
+- binary file
+- record -> prazdny zaznam na pomoc so ziskavanim metadat
+- pre testovanie sekvencny vypis, kde deserializujeme binarny subor na kontrolu, klasicky vypis triedy a atributov s hodnotami
+
+Trieda Block:
+- validCount -> pocet platnych recordov int
+- records[] -> v recordoch bude blockCount z dynhash zaznamov
+- funckia getSize() virtualna abstrakta -> int
+- getBytes() -> byte[]
+- fromBytes(byte[])
+
+Trieda Record
+- funckia getSize() -> int
+- getHash() -> bitset
+- getBytes() -> byte[]
+- fromBytes(byte[])
+- byteArray v operacnej pamati na konverziu medzi bytom a atributmi
+- newRecord() -> Record
+- equals -> 0/1
+
+Interface
+- funckia getSize() -> int
+- getBytes() -> byte[]
+- fromBytes(byte[])

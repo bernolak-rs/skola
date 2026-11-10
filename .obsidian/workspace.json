@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "afb72a04eecfd74a",
+        "id": "6053f86ea8f3774c",
         "type": "tabs",
         "children": [
           {
-            "id": "f693de550e8400d8",
+            "id": "194351008eb90983",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -185,19 +185,19 @@
       "bases:Create new base": false
     }
   },
-  "active": "f693de550e8400d8",
+  "active": "194351008eb90983",
   "lastOpenFiles": [
     "PDS.md",
     "AUS2.md",
+    "DB.md",
+    "PG.md",
     "Anj.md",
     "AUS2 AI DOKU CLI.md",
     "AUS2 AI DOKU.md",
     "AUS AI DOKU.md",
     "AI DOKU.md",
     "Sem1.md",
-    "DB.md",
     "OpenGluco Server Microservice Refactor Summary.md",
-    "PG.md",
     "Komunikačné technológie.md",
     "Learncpp.md",
     "Java.md",
